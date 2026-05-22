@@ -6,7 +6,7 @@ from app.auth import get_usuario_opcional
 
 from app.controllers import auth_controller
 
-app = FastAPI(title="Sistema de Ponto de venda")
+app = FastAPI(title="Projeto AAPM")
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 

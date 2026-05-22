@@ -39,30 +39,29 @@ def decodificar_token(token: str):
     return payload
 
 
-def get_usuario_logado():
-        token = request.cookies.get("access_token")
+def get_usuario_logado(resquest: Request):
+    token = resquest.cookies.get("access_token")
 
-        if not token:
-            raise HTTPException(
+    if not token:
+        raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Não esta autenticado"
         )
-        try:
-            payload = decodificar_token(token)
-            email = payload.get("sub")
-            if email is None:
-                    raise HTTPException(
+    try:
+        payload = decodificar_token(token)
+        email = payload.get("sub")
+        if email is None:
+            raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Não esta autenticado"
             )
-            return payload
-        except JWTError:
-            raise HTTPException(
+        return payload
+    except JWTError:
+        raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="token inválido"
             )
-
-
+    
 def get_usuario_opcional(resquest: Request):
     try:
         return get_usuario_logado(resquest)

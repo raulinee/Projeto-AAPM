@@ -85,3 +85,9 @@ def fazer_login(
         samesite="Lax"
     )
     return response
+
+@router.get("/logout")
+def sair():
+    response = RedirectResponse(url="/auth/login", status_code=302)
+    response.delete_cookie(key="access_token")
+    return response
