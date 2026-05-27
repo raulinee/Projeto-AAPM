@@ -1,0 +1,1 @@
+console.log("Painel iniciado com sucesso!");

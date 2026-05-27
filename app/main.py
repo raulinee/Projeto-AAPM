@@ -9,7 +9,7 @@ from app.controllers import usuario_controller
 
 app = FastAPI(title="Projeto AAPM")
 
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="app/templates")
 
@@ -25,7 +25,7 @@ def tela_inicial(
     if usuario is None:
         return templates.TemplateResponse(
             request,
-            "index.html",
+            "painel/index.html",
             {"request": request}
         )
     #logado - exibir a tela de funcionario
@@ -33,4 +33,20 @@ def tela_inicial(
         request,
         "home.html",
         {"request": request, "usuario": usuario}
+    )
+
+@app.get("/painel", response_class=HTMLResponse)
+async def painel(request: Request):
+
+    return templates.TemplateResponse(
+        "painel.html",
+        {"request": request}
+    )
+
+@app.get("/usuarios", response_class=HTMLResponse)
+async def usuarios(request: Request):
+
+    return templates.TemplateResponse(
+        "usuarios.html",
+        {"request": request}
     )
