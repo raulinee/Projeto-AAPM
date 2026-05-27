@@ -3,30 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro</title>
+    <title>Login — AAPM PDV</title>
+    <link rel="stylesheet" href="/static/login.css">
 </head>
 <body>
 
-    <h1>Entrar no sistema</h1>
-    <!-- Exibir uma mensagem de erro se existir-->
-    {% if erro %}
-        <p style="color: red;">{{erro}}</p>
-    {% endif %}
+<div class="login-page">
 
-    <!-- Exibir uma mensagem de sucesso se existir-->
-    {% if request.query_params.get("cadastro") == "ok" %}
-        <p style="color: green;">Cadastro realizado! faça login</p>
-    {% endif %}
+    <!-- Partículas de fundo (pontos + linhas) -->
+    <div class="login-particles">
+        <!-- Pontos -->
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <!-- Linhas -->
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
 
-    <form action="/auth/login" method="post">   
-        Email: <input type="email" name="email" required>
-        <br><br>
-        Senha: <input type="password" name="senha" required>
-        <br><br>
+    <!-- Losangos flutuantes -->
+    <div class="login-diamond login-diamond--1"></div>
+    <div class="login-diamond login-diamond--2"></div>
+    <div class="login-diamond login-diamond--3"></div>
+    <div class="login-diamond login-diamond--4"></div>
+    <div class="login-diamond login-diamond--5"></div>
+    <div class="login-diamond login-diamond--6"></div>
+    <div class="login-diamond login-diamond--7"></div>
+    <div class="login-diamond login-diamond--8"></div>
+    <div class="login-diamond login-diamond--9"></div>
 
-        <button type="submit">Entrar</button>
-    </form>
+    <!-- Conteúdo central -->
+    <div class="login-content">
 
-    
+        <!-- Logo e título -->
+        <div class="login-logo">
+            <div class="login-logo__icon">🎓</div>
+            <h1 class="login-logo__title">AAPM PDV</h1>
+            <span class="login-logo__subtitle">Sistema de Ponto de Venda</span>
+        </div>
+
+        <!-- Card do formulário -->
+        <div class="login-card">
+
+            <!-- Mensagem de erro -->
+            {% if erro %}
+                <div class="login-alert login-alert--error">{{ erro }}</div>
+            {% endif %}
+
+            <!-- Mensagem de sucesso (cadastro) -->
+            {% if request.query_params.get("cadastro") == "ok" %}
+                <div class="login-alert login-alert--success">Cadastro realizado! Faça login.</div>
+            {% endif %}
+
+            <form action="/auth/login" method="post">
+
+                <div class="login-card__group">
+                    <label class="login-card__label" for="email">E-mail</label>
+                    <input
+                        class="login-card__input"
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="seu@email.com"
+                        required
+                        autocomplete="email"
+                    >
+                </div>
+
+                <div class="login-card__group">
+                    <label class="login-card__label" for="senha">Senha</label>
+                    <input
+                        class="login-card__input"
+                        type="password"
+                        id="senha"
+                        name="senha"
+                        placeholder="••••••••"
+                        required
+                        autocomplete="current-password"
+                    >
+                </div>
+
+                <button class="login-card__btn" type="submit">Entrar</button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- Rodapé -->
+    <footer class="login-footer">
+        &copy; AAPM - 2026
+    </footer>
+
+</div>
+
 </body>
 </html>

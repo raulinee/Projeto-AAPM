@@ -6,10 +6,10 @@ from app.auth import hash_senha
 def seed():
     db = Session()
     try:
-        nome_usuario = "operador"
-        email_usuario = "operador@teste.com.br"
-        senha_usuario = "operador@12345"
-        perfil = "operador"
+        nome_usuario = "joao silva"
+        email_usuario = "joaosilva@topzera.com.br"
+        senha_usuario = "joao1345"
+        perfil = "admin"
 
 
         # Verificar se o usuário já existe

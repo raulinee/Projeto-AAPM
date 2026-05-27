@@ -1,0 +1,372 @@
+/* ============================================
+   LOGIN — CSS exclusivo da tela de login
+   ============================================ */
+
+/* ---------- RESET APENAS PARA LOGIN ---------- */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.login-page {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle, #0e3eb3 0%, #081b37 60%, #040e1e 100%);
+    position: relative;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ---------- PARTÍCULAS / REDE DE FUNDO ---------- */
+.login-particles {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+}
+
+/* Pontos luminosos */
+.login-particles .dot {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.35);
+    border-radius: 50%;
+    animation: particle-float 12s infinite ease-in-out;
+}
+
+.login-particles .dot:nth-child(1)  { top: 10%; left: 15%; animation-delay: 0s; animation-duration: 14s; }
+.login-particles .dot:nth-child(2)  { top: 20%; left: 70%; animation-delay: 1s; animation-duration: 11s; }
+.login-particles .dot:nth-child(3)  { top: 45%; left: 5%;  animation-delay: 2s; animation-duration: 16s; }
+.login-particles .dot:nth-child(4)  { top: 60%; left: 85%; animation-delay: 0.5s; animation-duration: 13s; }
+.login-particles .dot:nth-child(5)  { top: 80%; left: 30%; animation-delay: 3s; animation-duration: 15s; }
+.login-particles .dot:nth-child(6)  { top: 15%; left: 50%; animation-delay: 1.5s; animation-duration: 10s; }
+.login-particles .dot:nth-child(7)  { top: 70%; left: 60%; animation-delay: 4s; animation-duration: 12s; }
+.login-particles .dot:nth-child(8)  { top: 35%; left: 90%; animation-delay: 2.5s; animation-duration: 14s; }
+.login-particles .dot:nth-child(9)  { top: 90%; left: 75%; animation-delay: 0.8s; animation-duration: 11s; }
+.login-particles .dot:nth-child(10) { top: 55%; left: 20%; animation-delay: 3.5s; animation-duration: 13s; }
+.login-particles .dot:nth-child(11) { top: 25%; left: 35%; animation-delay: 1.2s; animation-duration: 15s; }
+.login-particles .dot:nth-child(12) { top: 75%; left: 45%; animation-delay: 2.8s; animation-duration: 12s; }
+
+/* Linhas de conexão (simuladas com divs finos e rotacionados) */
+.login-particles .line {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+    transform-origin: left center;
+    animation: line-pulse 8s infinite ease-in-out;
+}
+
+.login-particles .line:nth-child(13) { top: 18%; left: 10%; width: 200px; transform: rotate(25deg);  animation-delay: 0s; }
+.login-particles .line:nth-child(14) { top: 40%; left: 60%; width: 180px; transform: rotate(-15deg); animation-delay: 1s; }
+.login-particles .line:nth-child(15) { top: 65%; left: 20%; width: 250px; transform: rotate(10deg);  animation-delay: 2s; }
+.login-particles .line:nth-child(16) { top: 30%; left: 75%; width: 160px; transform: rotate(-30deg); animation-delay: 0.5s; }
+.login-particles .line:nth-child(17) { top: 80%; left: 50%; width: 220px; transform: rotate(20deg);  animation-delay: 1.5s; }
+.login-particles .line:nth-child(18) { top: 50%; left: 5%;  width: 190px; transform: rotate(-8deg);  animation-delay: 3s; }
+.login-particles .line:nth-child(19) { top: 12%; left: 40%; width: 170px; transform: rotate(35deg);  animation-delay: 2.2s; }
+.login-particles .line:nth-child(20) { top: 72%; left: 70%; width: 210px; transform: rotate(-20deg); animation-delay: 0.8s; }
+
+@keyframes particle-float {
+    0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+    25%      { transform: translate(15px, -20px); opacity: 0.6; }
+    50%      { transform: translate(-10px, 15px); opacity: 0.4; }
+    75%      { transform: translate(20px, 10px); opacity: 0.7; }
+}
+
+@keyframes line-pulse {
+    0%, 100% { opacity: 0.3; }
+    50%      { opacity: 0.8; }
+}
+
+/* ---------- LOSANGOS (DIAMANTES) FLUTUANTES ---------- */
+.login-diamond {
+    position: absolute;
+    z-index: 0;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #ff7a28 0%, #f25a00 100%);
+    transform: rotate(45deg);
+    border-radius: 4px;
+    opacity: 0.75;
+    box-shadow: 0 4px 20px rgba(255, 90, 0, 0.45);
+}
+
+.login-diamond--1 {
+    top: 8%;
+    right: 12%;
+    width: 50px;
+    height: 50px;
+    animation: diamond-float-1 8s infinite ease-in-out;
+}
+
+.login-diamond--2 {
+    top: 5%;
+    right: 25%;
+    width: 30px;
+    height: 30px;
+    opacity: 0.5;
+    animation: diamond-float-2 10s infinite ease-in-out;
+}
+
+.login-diamond--3 {
+    top: 20%;
+    right: 6%;
+    width: 35px;
+    height: 35px;
+    opacity: 0.6;
+    animation: diamond-float-3 9s infinite ease-in-out;
+}
+
+.login-diamond--4 {
+    bottom: 15%;
+    left: 8%;
+    width: 55px;
+    height: 55px;
+    animation: diamond-float-1 11s infinite ease-in-out;
+    animation-delay: 1s;
+}
+
+.login-diamond--5 {
+    bottom: 25%;
+    left: 20%;
+    width: 28px;
+    height: 28px;
+    opacity: 0.5;
+    animation: diamond-float-2 7s infinite ease-in-out;
+    animation-delay: 2s;
+}
+
+.login-diamond--6 {
+    bottom: 10%;
+    right: 20%;
+    width: 45px;
+    height: 45px;
+    opacity: 0.65;
+    animation: diamond-float-3 12s infinite ease-in-out;
+    animation-delay: 0.5s;
+}
+
+.login-diamond--7 {
+    top: 50%;
+    right: 4%;
+    width: 32px;
+    height: 32px;
+    opacity: 0.45;
+    animation: diamond-float-1 9s infinite ease-in-out;
+    animation-delay: 3s;
+}
+
+.login-diamond--8 {
+    top: 15%;
+    left: 10%;
+    width: 48px;
+    height: 48px;
+    opacity: 0.65;
+    animation: diamond-float-1 9s infinite ease-in-out;
+    animation-delay: 1.5s;
+}
+
+.login-diamond--9 {
+    top: 32%;
+    left: 4%;
+    width: 30px;
+    height: 30px;
+    opacity: 0.5;
+    animation: diamond-float-3 11s infinite ease-in-out;
+    animation-delay: 2.5s;
+}
+
+@keyframes diamond-float-1 {
+    0%, 100% { transform: rotate(45deg) translate(0, 0); }
+    33%      { transform: rotate(48deg) translate(10px, -15px); }
+    66%      { transform: rotate(42deg) translate(-8px, 10px); }
+}
+
+@keyframes diamond-float-2 {
+    0%, 100% { transform: rotate(45deg) translate(0, 0); }
+    50%      { transform: rotate(50deg) translate(-12px, -18px); }
+}
+
+@keyframes diamond-float-3 {
+    0%, 100% { transform: rotate(45deg) translate(0, 0); opacity: 0.6; }
+    25%      { transform: rotate(40deg) translate(8px, -12px); opacity: 0.8; }
+    75%      { transform: rotate(50deg) translate(-6px, 8px); opacity: 0.5; }
+}
+
+/* ---------- CONTEÚDO CENTRAL ---------- */
+.login-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 460px;
+    padding: 0 20px;
+}
+
+/* ---------- LOGO + TÍTULO ---------- */
+.login-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.login-logo__icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #ff7a28 0%, #f25a00 100%);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 15px rgba(255, 90, 0, 0.5);
+}
+
+.login-logo__title {
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.login-logo__subtitle {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+/* ---------- CARD DO FORMULÁRIO ---------- */
+.login-card {
+    background: #f5f5f5;
+    border-radius: 12px;
+    padding: 36px 32px;
+    width: 100%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.login-card__group {
+    margin-bottom: 20px;
+}
+
+.login-card__label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.login-card__input {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #333;
+    outline: none;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.login-card__input::placeholder {
+    color: #aaa;
+}
+
+.login-card__input:focus {
+    border-color: #e8772e;
+    box-shadow: 0 0 0 3px rgba(232, 119, 46, 0.12);
+}
+
+.login-card__btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(135deg, #ff7a28 0%, #f25a00 100%);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    box-shadow: 0 4px 12px rgba(255, 90, 0, 0.45);
+    font-family: Arial, Helvetica, sans-serif;
+    margin-top: 4px;
+}
+
+.login-card__btn:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(255, 90, 0, 0.55);
+}
+
+.login-card__btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(255, 90, 0, 0.35);
+}
+
+.login-card__hint {
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+    margin-top: 16px;
+}
+
+/* ---------- MENSAGENS DE ERRO E SUCESSO ---------- */
+.login-alert {
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+.login-alert--error {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.2);
+}
+
+.login-alert--success {
+    background: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.2);
+}
+
+/* ---------- RODAPÉ ---------- */
+.login-footer {
+    position: relative;
+    z-index: 1;
+    margin-top: 32px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 13px;
+}
+
+/* ---------- RESPONSIVO ---------- */
+@media (max-width: 520px) {
+    .login-card {
+        padding: 28px 20px;
+    }
+
+    .login-logo__title {
+        font-size: 24px;
+    }
+
+    .login-diamond {
+        display: none;
+    }
+}
