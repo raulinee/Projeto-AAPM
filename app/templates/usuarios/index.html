@@ -1,0 +1,64 @@
+<!-- templates/usuarios/index -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuários — Estoque</title>
+</head>
+<body>
+    <h1>Usuários</h1>
+
+    <a href="/usuarios/novo">+ Novo usuário</a>
+
+    <!-- Mensagens de feedback via query string -->
+    {% if request.query_params.get('criado') == 'ok' %}
+        <p style="color: green;">Usuário criado com sucesso!</p>
+    {% endif %}
+    {% if request.query_params.get('editado') == 'ok' %}
+        <p style="color: green;">Usuário atualizado com sucesso!</p>
+    {% endif %}
+    {% if request.query_params.get('erro') == 'autoproprio' %}
+        <p style="color: red;">Você não pode desativar sua própria conta.</p>
+    {% endif %}
+
+    <table border="1" cellpadding="8">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Perfil</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in usuarios %}
+            <tr>
+                <td>{{ u.nome }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.role }}</td>
+                <td>{{ "Ativo" if u.ativo else "Inativo" }}</td>
+                <td>
+                    <a href="/usuarios/{{ u.id }}/editar">Editar</a>
+
+                    <!--
+                        Usamos um form com POST para ações destrutivas.
+                        Links GET podem ser acionados acidentalmente
+                        (pré-fetch do browser, bots, etc.)
+                    -->
+                    <form action="/usuarios/{{ u.id }}/toggle-ativo"
+                          method="post"
+                          style="display:inline">
+                        <button type="submit">
+                            {{ "Desativar" if u.ativo else "Ativar" }}
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p><a href="/">← Voltar ao home</a></p>
+</body>
+</html>
