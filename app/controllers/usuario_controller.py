@@ -8,7 +8,8 @@ from app.auth import get_admin, hash_senha
 
 router = APIRouter(prefix="/usuarios", tags=["Usuários"])
 
-templates = Jinja2Templates(directory="app/templates")
+templates = Jinja2Templates(directory="templates")
+
 
 @router.get("/")
 def listar_usuario(
