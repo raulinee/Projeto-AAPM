@@ -1,159 +1,139 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}Painel Administrativo — AAPM PDV{% endblock %}
 
-    <title>Painel Administrativo</title>
+{% block content %}
+<style>
+    .page-wrapper {
+        padding: 32px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="./style.css">
+    .page-header {
+        margin-bottom: 32px;
+    }
 
-    <!-- Fonte -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    .page-header h2 {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
-</head>
+    /* Cards Container */
+    .dashboard-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        margin-bottom: 32px;
+    }
 
-<body>
+    /* Single Card */
+    .stat-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
 
-    <div class="container">
+    .stat-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--text-muted);
+        font-size: 13px;
+        font-weight: 500;
+    }
 
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
+    .stat-icon {
+        width: 16px;
+        height: 16px;
+    }
 
-            <div class="logo">
-                <h2>AAPM</h2>
-            </div>
+    /* Card Specific Colors */
+    .color-blue { color: #3b82f6; }
+    .color-green { color: #10b981; }
+    .color-orange { color: #f59e0b; }
+    .color-purple { color: #8b5cf6; }
 
-            <nav class="menu">
+    .stat-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
 
-                <a href="#" class="active">
-                    Dashboard
-                </a>
+    /* Produtos Mais Vendidos */
+    .bestsellers-section {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
 
-                <a href="#">
-                    Produtos
-                </a>
+    .section-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 24px;
+    }
 
-                <a href="#">
-                    Estoque
-                </a>
+    .empty-state {
+        color: var(--text-muted);
+        font-size: 13px;
+    }
+</style>
 
-                <a href="#">
-                    Vendas
-                </a>
-
-                <a href="#">
-                    Usuários
-                </a>
-
-                <a href="#">
-                    Relatórios
-                </a>
-
-            </nav>
-
-        </aside>
-
-        <!-- MAIN -->
-        <main class="main-content">
-
-            <!-- HEADER -->
-            <header class="header">
-
-                <div class="header-text">
-                    <h1>Painel Administrativo</h1>
-                    <p>Bem-vindo ao sistema da AAPM</p>
-                </div>
-
-                <div class="user-box">
-                    Admin
-                </div>
-
-            </header>
-
-            <!-- CARDS -->
-            <section class="cards">
-
-                <div class="card">
-                    <p>Total de Produtos</p>
-                    <h2>152</h2>
-                </div>
-
-                <div class="card">
-                    <p>Vendas Hoje</p>
-                    <h2>R$ 1.250</h2>
-                </div>
-
-                <div class="card">
-                    <p>Produtos Baixos</p>
-                    <h2>8</h2>
-                </div>
-
-                <div class="card">
-                    <p>Total Usuários</p>
-                    <h2>12</h2>
-                </div>
-
-            </section>
-
-            <!-- TABELA -->
-            <section class="table-section">
-
-                <div class="table-header">
-                    <h2>Últimas Vendas</h2>
-                </div>
-
-                <table>
-
-                    <thead>
-                        <tr>
-                            <th>Produto</th>
-                            <th>Categoria</th>
-                            <th>Quantidade</th>
-                            <th>Valor</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-
-                        <tr>
-                            <td>Refrigerante</td>
-                            <td>Bebidas</td>
-                            <td>5</td>
-                            <td>R$ 35,00</td>
-                        </tr>
-
-                        <tr>
-                            <td>Salgado</td>
-                            <td>Lanches</td>
-                            <td>10</td>
-                            <td>R$ 50,00</td>
-                        </tr>
-
-                        <tr>
-                            <td>Chocolate</td>
-                            <td>Doces</td>
-                            <td>7</td>
-                            <td>R$ 28,00</td>
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </section>
-
-        </main>
-
+<div class="page-wrapper">
+    
+    <div class="page-header">
+        <h2>Painel Administrativo</h2>
     </div>
 
-    <script src="./script.js"></script>
+    <!-- Cards Row -->
+    <div class="dashboard-cards">
+        <div class="stat-card">
+            <div class="stat-header">
+                <i data-lucide="shopping-cart" class="stat-icon color-blue"></i>
+                <span>Vendas Hoje</span>
+            </div>
+            <div class="stat-value">0</div>
+        </div>
 
-</body>
+        <div class="stat-card">
+            <div class="stat-header">
+                <i data-lucide="dollar-sign" class="stat-icon color-green"></i>
+                <span>Total Hoje</span>
+            </div>
+            <div class="stat-value">R$ 0,00</div>
+        </div>
 
-</html>
+        <div class="stat-card">
+            <div class="stat-header">
+                <i data-lucide="trending-up" class="stat-icon color-orange"></i>
+                <span>Total Geral</span>
+            </div>
+            <div class="stat-value">R$ 0,00</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <i data-lucide="bar-chart-2" class="stat-icon color-purple"></i>
+                <span>Total Vendas</span>
+            </div>
+            <div class="stat-value">0</div>
+        </div>
+    </div>
+
+    <!-- Produtos Mais Vendidos -->
+    <div class="bestsellers-section">
+        <h3 class="section-title">Produtos Mais Vendidos</h3>
+        <p class="empty-state">Nenhuma venda registrada ainda</p>
+    </div>
+
+</div>
+{% endblock %}

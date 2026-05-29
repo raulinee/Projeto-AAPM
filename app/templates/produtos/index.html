@@ -1,96 +1,276 @@
-<!-- templates/produtos/index.html -->
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Produtos — AAPM SENAI</title>
-</head>
-<body>
-    <h1>Produtos</h1>
+{% extends "base.html" %}
+
+{% block title %}Produtos — AAPM PDV{% endblock %}
+
+{% block content %}
+<style>
+    .page-wrapper {
+        padding: 32px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+    }
+
+    .header-info {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .header-icon {
+        width: 48px;
+        height: 48px;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-primary);
+    }
+
+    .title-area h2 {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    .btn-primary {
+        background: var(--accent-color);
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+        background: var(--accent-hover);
+    }
+
+    /* Product List */
+    .products-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .product-row {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 20px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        transition: transform 0.2s;
+    }
+
+    .product-row:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .product-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .product-name {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .product-details {
+        font-size: 13px;
+        color: var(--text-muted);
+    }
+
+    .product-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .action-icon {
+        color: var(--text-muted);
+        transition: color 0.2s;
+    }
+
+    .action-icon:hover {
+        color: var(--text-primary);
+    }
+
+    .action-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .action-delete {
+        color: #ef4444;
+    }
+
+    .action-delete:hover {
+        color: #b91c1c;
+    }
+
+    /* Feedback messages */
+    .alert {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    .alert-success {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+    
+    /* Filtros (caso existam) */
+    .filters-bar {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .search-input-wrapper {
+        position: relative;
+        flex: 1;
+    }
+
+    .search-input-wrapper i {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        width: 18px;
+        height: 18px;
+    }
+
+    .search-input-wrapper input {
+        width: 100%;
+        padding: 12px 16px 12px 44px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    .search-input-wrapper input:focus {
+        border-color: var(--accent-color);
+    }
+
+    .filter-select {
+        padding: 12px 16px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 14px;
+        color: var(--text-primary);
+        outline: none;
+        background: #fff;
+        min-width: 200px;
+    }
+</style>
+
+<div class="page-wrapper">
+    
+    <!-- Header -->
+    <div class="page-header">
+        <div class="header-info">
+            <div class="header-icon">
+                <i data-lucide="package" style="width: 24px; height: 24px;"></i>
+            </div>
+            <div class="title-area">
+                <h2>Gestão de Produtos</h2>
+            </div>
+        </div>
+        {% if usuario.role == 'admin' %}
+        <a href="/produtos/novo" class="btn-primary">
+            <i data-lucide="plus" style="width: 18px; height: 18px;"></i>
+            Novo Produto
+        </a>
+        {% endif %}
+    </div>
 
     {% if request.query_params.get('criado') == 'ok' %}
-        <p style="color:green">Produto criado com sucesso!</p>
+        <div class="alert alert-success">Produto criado com sucesso!</div>
     {% endif %}
     {% if request.query_params.get('desativado') == 'ok' %}
-        <p style="color:green">Produto desativado.</p>
+        <div class="alert alert-success">Produto desativado com sucesso.</div>
     {% endif %}
 
     <!-- Filtros -->
-    <form method="get" action="/produtos">
-        <input  type="text"
-                name="busca"
-                placeholder="Buscar por nome..."
-                value="{{ busca }}">
-
-        <select name="categoria_id">
+    <form method="get" action="/produtos" class="filters-bar">
+        <div class="search-input-wrapper">
+            <i data-lucide="search"></i>
+            <input type="text" name="busca" placeholder="Buscar por nome..." value="{{ busca }}">
+        </div>
+        
+        <select name="categoria_id" class="filter-select" onchange="this.form.submit()">
             <option value="0">Todas as categorias</option>
             {% for c in categorias %}
-                <option value="{{ c.id }}"
-                    {{ 'selected' if categoria_id == c.id else '' }}>
+                <option value="{{ c.id }}" {{ 'selected' if categoria_id == c.id else '' }}>
                     {{ c.nome }}
                 </option>
             {% endfor %}
         </select>
-
-        <button type="submit">Filtrar</button>
-
-        {% if busca or categoria_id %}
-            <a href="/produtos">Limpar</a>
-        {% endif %}
+        
+        <noscript>
+            <button type="submit" class="btn-primary" style="border:none;">Filtrar</button>
+        </noscript>
     </form>
 
-    {% if usuario.role == 'admin' %}
-        <a href="/produtos/novo">+ Novo produto</a>
-    {% endif %}
+    <!-- Lista de Produtos -->
+    <div class="products-list">
+        {% for p in produtos %}
+        <div class="product-row">
+            <div class="product-info">
+                <span class="product-name">{{ p.nome }}</span>
+                <span class="product-details">
+                    {{ p.categoria.nome if p.categoria else "Sem Categoria" }} • R$ {{ "%.2f"|format(p.preco)|replace('.', ',') }}
+                </span>
+            </div>
+            <div class="product-actions">
+                {% if usuario.role == 'admin' %}
+                    <a href="/produtos/{{ p.id }}/editar" class="action-icon">
+                        <i data-lucide="edit-2" style="width: 18px; height: 18px;"></i>
+                    </a>
+                    <form action="/produtos/{{ p.id }}/desativar" method="post" style="margin: 0;" onsubmit="return confirm('Tem certeza que deseja desativar {{ p.nome }}?');">
+                        <button type="submit" class="action-btn action-delete">
+                            <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
 
-    <table border="1" cellpadding="8">
-        <thead>
-            <tr>
-                <th>Imagem</th>
-                <th>Nome</th>
-                <th>Categoria</th>
-                <th>Preço</th>
-                <th>Estoque</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for p in produtos %}
-            <tr>
-                <td>
-                    <img src="{{ p.imagem_url }}"
-                         alt="{{ p.nome }}"
-                         width="50" height="50"
-                         style="object-fit:cover">
-                </td>
-                <td><a href="/produtos/{{ p.id }}">{{ p.nome }}</a></td>
-                <td>{{ p.categoria.nome if p.categoria else "—" }}</td>
-                <td>R$ {{ "%.2f"|format(p.preco) }}</td>
-                <td>{{ p.estoque_atual }}</td>
-                <td>
-                    {% if usuario.role == 'admin' %}
-                        <a href="/produtos/{{ p.id }}/editar">Editar</a>
-                        <form action="/produtos/{{ p.id }}/desativar"
-                              method="post"
-                              style="display:inline"
-                              onsubmit="return confirm('Desativar {{ p.nome }}?')">
-                            <button type="submit">Desativar</button>
-                        </form>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
+        {% if not produtos %}
+        <div style="text-align: center; color: var(--text-muted); padding: 40px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color);">
+            Nenhum produto encontrado.
+        </div>
+        {% endif %}
+    </div>
 
-            {% if not produtos %}
-            <tr>
-                <td colspan="6" style="text-align:center">
-                    Nenhum produto encontrado.
-                </td>
-            </tr>
-            {% endif %}
-        </tbody>
-    </table>
-
-    <p><a href="/">← Dashboard</a></p>
-</body>
-</html>
+</div>
+{% endblock %}

@@ -17,80 +17,90 @@
     <!-- CSS -->
     <link
         rel="stylesheet"
+        href="/static/dashboard.css"
+    >
+    <link
+        rel="stylesheet"
         href="/static/style.css"
     >
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
 </head>
 
 <body>
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-
-        <div class="logo">
-
-            <div class="logo-icon">
-                🎓
+    <!-- HEADER / BARRA SUPERIOR -->
+    <header class="main-header">
+        <div class="header-left">
+            <div class="logo">
+                <span class="logo-icon"><i data-lucide="graduation-cap"></i></span>
+                <span>AAPM PDV</span>
             </div>
-
-            <h2>AAPM</h2>
-
+            
+            <!-- Menu de Abas -->
+            <nav class="main-nav">
+                <a href="/" class="nav-item {% if request.url.path == '/' %}active{% endif %}">
+                    <i data-lucide="shopping-cart"></i>
+                    <span>PDV</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i data-lucide="history"></i>
+                    <span>Histórico</span>
+                </a>
+                <a href="/produtos" class="nav-item {% if '/produtos' in request.url.path %}active{% endif %}">
+                    <i data-lucide="package"></i>
+                    <span>Produtos</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i data-lucide="archive"></i>
+                    <span>Armários</span>
+                </a>
+                <a href="/painel" class="nav-item {% if '/painel' in request.url.path %}active{% endif %}">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Painel</span>
+                </a>
+                <a href="/usuarios" class="nav-item {% if '/usuarios' in request.url.path %}active{% endif %}">
+                    <i data-lucide="users"></i>
+                    <span>Usuários</span>
+                </a>
+            </nav>
         </div>
 
-        <!-- MENU -->
-        <nav class="menu">
+        <div class="header-right">
+            <!-- Usuário Logado -->
+            <div class="user-profile">
+                <div class="user-info">
+                    <span class="user-name">{{ usuario.nome if usuario else 'Administrador' }}</span>
+                    <span class="user-role">{{ usuario.role|capitalize if usuario else 'Admin' }}</span>
+                </div>
+                <div class="user-avatar">
+                    {{ (usuario.nome[0]|upper) if usuario else 'A' }}
+                </div>
+            </div>
 
-            <a href="/">
-                Dashboard
+            <!-- Logout -->
+            <a href="/auth/logout" class="logout-btn" title="Sair">
+                <i data-lucide="log-out"></i>
             </a>
-
-            <a href="/usuarios">
-                Usuários
-            </a>
-
-            <a href="/categorias">
-                Categorias
-            </a>
-
-            <a href="/produtos">
-                Produtos
-            </a>
-
-        </nav>
-
-        <!-- LOGOUT -->
-        <a
-            href="/logout"
-            class="logout"
-        >
-            Sair
-        </a>
-
-    </aside>
+        </div>
+    </header>
 
     <!-- CONTEÚDO -->
-    <main class="content">
-
-        <!-- TOPO -->
-        <header class="topbar">
-
-            <h1>
-                {% block page_title %}
-                    Dashboard
-                {% endblock %}
-            </h1>
-
-        </header>
-
-        <!-- CONTEUDO -->
-        <section class="page-content">
-
-            {% block content %}
-            {% endblock %}
-
-        </section>
-
+    <main class="page-container">
+        {% block content %}
+        {% endblock %}
     </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+        });
+    </script>
+    
+    {% block scripts %}
+    {% endblock %}
 
 </body>
 </html>

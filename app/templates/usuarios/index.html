@@ -1,64 +1,371 @@
-<!-- templates/usuarios/index -->
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Usuários — Estoque</title>
-</head>
-<body>
-    <h1>Usuários</h1>
+{% extends "base.html" %}
 
-    <a href="/usuarios/novo">+ Novo usuário</a>
+{% block title %}Usuários — AAPM PDV{% endblock %}
 
-    <!-- Mensagens de feedback via query string -->
-    {% if request.query_params.get('criado') == 'ok' %}
-        <p style="color: green;">Usuário criado com sucesso!</p>
-    {% endif %}
-    {% if request.query_params.get('editado') == 'ok' %}
-        <p style="color: green;">Usuário atualizado com sucesso!</p>
-    {% endif %}
-    {% if request.query_params.get('erro') == 'autoproprio' %}
-        <p style="color: red;">Você não pode desativar sua própria conta.</p>
-    {% endif %}
+{% block content %}
+<style>
+    .page-wrapper {
+        padding: 32px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
 
-    <table border="1" cellpadding="8">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>E-mail</th>
-                <th>Perfil</th>
-                <th>Status</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for u in usuarios %}
-            <tr>
-                <td>{{ u.nome }}</td>
-                <td>{{ u.email }}</td>
-                <td>{{ u.role }}</td>
-                <td>{{ "Ativo" if u.ativo else "Inativo" }}</td>
-                <td>
-                    <a href="/usuarios/{{ u.id }}/editar">Editar</a>
+    .content-card {
+        background: var(--bg-card);
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+        padding: 32px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
 
-                    <!--
-                        Usamos um form com POST para ações destrutivas.
-                        Links GET podem ser acionados acidentalmente
-                        (pré-fetch do browser, bots, etc.)
-                    -->
-                    <form action="/usuarios/{{ u.id }}/toggle-ativo"
-                          method="post"
-                          style="display:inline">
-                        <button type="submit">
-                            {{ "Desativar" if u.ativo else "Ativar" }}
-                        </button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+    }
 
-    <p><a href="/">← Voltar ao home</a></p>
-</body>
-</html>
+    .header-info {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .header-icon {
+        width: 48px;
+        height: 48px;
+        background: #f1f5f9;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-primary);
+    }
+
+    .title-area h2 {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+    }
+
+    .title-area p {
+        font-size: 13px;
+        color: var(--text-muted);
+    }
+
+    .btn-primary {
+        background: var(--accent-color);
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+        background: var(--accent-hover);
+    }
+
+    /* Filtros */
+    .filters-bar {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .search-input-wrapper {
+        position: relative;
+        flex: 1;
+    }
+
+    .search-input-wrapper i {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        width: 18px;
+        height: 18px;
+    }
+
+    .search-input-wrapper input {
+        width: 100%;
+        padding: 12px 16px 12px 44px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    .search-input-wrapper input:focus {
+        border-color: var(--accent-color);
+    }
+
+    .filter-select {
+        padding: 12px 16px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 14px;
+        color: var(--text-primary);
+        outline: none;
+        background: #fff;
+        min-width: 200px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Tabela */
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .data-table th {
+        text-align: left;
+        padding: 16px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .data-table td {
+        padding: 16px;
+        border-bottom: 1px solid var(--border-color);
+        vertical-align: middle;
+    }
+
+    /* Usuário Cell */
+    .user-cell {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .user-avatar-small {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #eff6ff;
+        color: var(--accent-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .user-details strong {
+        display: block;
+        font-size: 14px;
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+
+    .user-details span {
+        display: block;
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 2px;
+    }
+
+    /* Funções / Status */
+    .role-select {
+        padding: 6px 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        font-size: 13px;
+        background: #fff;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .status-text {
+        font-size: 12px;
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 12px;
+    }
+
+    .status-text.ativo {
+        background: var(--accent-color);
+        color: #fff;
+    }
+
+    .status-text.inativo {
+        background: #f1f5f9;
+        color: var(--text-muted);
+    }
+
+    .date-text {
+        font-size: 13px;
+        color: var(--text-muted);
+    }
+
+    /* Ações */
+    .action-btn {
+        background: none;
+        border: none;
+        color: #ef4444;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 6px;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .action-btn:hover {
+        background: #fee2e2;
+    }
+
+    /* Feedback messages */
+    .alert {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    .alert-success {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+    .alert-danger {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+</style>
+
+<div class="page-wrapper">
+    <div class="content-card">
+        
+        <!-- Header -->
+        <div class="page-header">
+            <div class="header-info">
+                <div class="header-icon">
+                    <i data-lucide="users"></i>
+                </div>
+                <div class="title-area">
+                    <h2>Gestão de Usuários</h2>
+                    <p>Gerencie os acessos, cargos e permissões do sistema AAPM</p>
+                </div>
+            </div>
+            <a href="/usuarios/novo" class="btn-primary">
+                <i data-lucide="plus" style="width: 18px; height: 18px;"></i>
+                Novo Usuário
+            </a>
+        </div>
+
+        {% if request.query_params.get('criado') == 'ok' %}
+            <div class="alert alert-success">Usuário criado com sucesso!</div>
+        {% endif %}
+        {% if request.query_params.get('editado') == 'ok' %}
+            <div class="alert alert-success">Usuário atualizado com sucesso!</div>
+        {% endif %}
+        {% if request.query_params.get('erro') == 'autoproprio' %}
+            <div class="alert alert-danger">Você não pode desativar sua própria conta.</div>
+        {% endif %}
+
+        <!-- Filtros -->
+        <div class="filters-bar">
+            <div class="search-input-wrapper">
+                <i data-lucide="search"></i>
+                <input type="text" placeholder="Buscar por nome ou e-mail...">
+            </div>
+            <select class="filter-select">
+                <option value="">Todas as funções</option>
+                <option value="admin">Administrador</option>
+                <option value="operador">Operador</option>
+            </select>
+        </div>
+
+        <!-- Tabela -->
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Usuário</th>
+                    <th>Função</th>
+                    <th>Status</th>
+                    <th>Criado Em</th>
+                    <th style="text-align: center;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in usuarios %}
+                <tr>
+                    <td>
+                        <div class="user-cell">
+                            <div class="user-avatar-small">
+                                {{ u.nome[:2]|upper }}
+                            </div>
+                            <div class="user-details">
+                                <a href="/usuarios/{{ u.id }}/editar" style="text-decoration:none; color:inherit;">
+                                    <strong>{{ u.nome }}</strong>
+                                </a>
+                                <span>{{ u.email }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="role-select">
+                            {{ "Administrador" if u.role == 'admin' else "Operador" }}
+                        </span>
+                    </td>
+                    <td>
+                        <form action="/usuarios/{{ u.id }}/toggle-ativo" method="post" style="margin: 0;">
+                            <div class="status-badge">
+                                <label class="switch" style="transform: scale(0.8); margin: 0;">
+                                    <input type="checkbox" onchange="this.form.submit()" {% if u.ativo %}checked{% endif %}>
+                                    <span class="slider"></span>
+                                </label>
+                                {% if u.ativo %}
+                                    <span class="status-text ativo">Ativo</span>
+                                {% else %}
+                                    <span class="status-text inativo">Inativo</span>
+                                {% endif %}
+                            </div>
+                        </form>
+                    </td>
+                    <td>
+                        <span class="date-text">
+                            {{ u.criado_em.strftime('%d/%m/%Y') if u.criado_em else '—' }}
+                        </span>
+                    </td>
+                    <td style="text-align: center;">
+                        <!-- O ideal seria uma rota DELETE, mas para UI vamos usar editar ou alguma rota de delete se houver -->
+                        <div style="display: flex; justify-content: center;">
+                            <a href="/usuarios/{{ u.id }}/editar" class="action-btn" title="Editar">
+                                <i data-lucide="edit-2" style="width: 18px; height: 18px; color: var(--text-muted);"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not usuarios %}
+                <tr>
+                    <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 32px;">
+                        Nenhum usuário encontrado.
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+{% endblock %}

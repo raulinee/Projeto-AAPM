@@ -1,86 +1,232 @@
-<!-- templates/produtos/form.html -->
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ "Editar" if editando else "Novo" }} Produto — AAPM SENAI</title>
-</head>
-<body>
-    <h1>{{ "Editar produto" if editando else "Novo produto" }}</h1>
+{% extends "base.html" %}
 
-    {% if erro %}
-        <p style="color:red">{{ erro }}</p>
-    {% endif %}
+{% block title %}{{ "Editar" if editando else "Novo" }} Produto — AAPM PDV{% endblock %}
 
-    <!--
-        enctype="multipart/form-data" é obrigatório para envio de arquivos.
-        Sem ele o FastAPI não consegue ler o UploadFile.
-    -->
-    <form action="{{ '/produtos/' + editando.id|string + '/editar' if editando else '/produtos/novo' }}"
-          method="post"
-          enctype="multipart/form-data">
+{% block content %}
+<style>
+    .page-wrapper {
+        padding: 40px 24px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100%;
+    }
 
-        <label>Nome:
-            <input type="text"
-                   name="nome"
-                   value="{{ editando.nome if editando else (valores.nome if valores else '') }}"
-                   required>
-        </label>
-        <br>
+    .form-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 32px;
+        width: 100%;
+        max-width: 500px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        position: relative;
+    }
 
-        <label>Preço (R$):
-            <input type="number"
-                   name="preco"
-                   step="0.01"
-                   min="0"
-                   value="{{ editando.preco if editando else (valores.preco if valores else '0.00') }}"
-                   required>
-        </label>
-        <br>
+    .close-btn {
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        color: var(--text-muted);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.2s;
+    }
 
-        <label>Estoque atual:
-            <input type="number"
-                   name="estoque_atual"
-                   min="0"
-                   value="{{ editando.estoque_atual if editando else (valores.estoque_atual if valores else '0') }}"
-                   required>
-        </label>
-        <br>
+    .close-btn:hover {
+        color: var(--text-primary);
+    }
 
-        <label>Categoria:
-            <select name="categoria_id">
-                <option value="0">Sem categoria</option>
-                {% for c in categorias %}
-                    <option value="{{ c.id }}"
-                        {{ 'selected' if (editando and editando.categoria_id == c.id) or (valores and valores.categoria_id == c.id) else '' }}>
-                        {{ c.nome }}
-                    </option>
-                {% endfor %}
-            </select>
-        </label>
-        <br>
+    .form-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 24px;
+    }
 
-        <!-- Imagem atual na edição -->
-        {% if editando and editando.imagem_path %}
-            <p>Imagem atual:</p>
-            <img src="{{ editando.imagem_url }}"
-                 alt="{{ editando.nome }}"
-                 width="100"
-                 style="object-fit:cover">
-            <br>
+    .form-group {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .form-row .form-group {
+        margin-bottom: 0;
+        flex: 1;
+    }
+
+    .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 14px;
+        color: var(--text-primary);
+        background-color: #fff;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+        border-color: var(--accent-color);
+    }
+
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+        padding-right: 40px;
+    }
+
+    .btn-submit {
+        width: 100%;
+        background-color: var(--orange-color);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 14px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: 12px;
+    }
+
+    .btn-submit:hover {
+        background-color: var(--orange-hover);
+        box-shadow: 0 4px 12px rgba(255, 122, 40, 0.3);
+    }
+
+    .alert-error {
+        background-color: #fee2e2;
+        color: #991b1b;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        margin-bottom: 24px;
+    }
+
+    .current-image-preview {
+        margin-top: 8px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        width: 100px;
+        height: 100px;
+    }
+</style>
+
+<div class="page-wrapper">
+    <div class="form-card">
+        
+        <a href="/produtos" class="close-btn" title="Cancelar">
+            <i data-lucide="x"></i>
+        </a>
+
+        <h2 class="form-title">{{ "Editar Produto" if editando else "Novo Produto" }}</h2>
+
+        {% if erro %}
+            <div class="alert-error">{{ erro }}</div>
         {% endif %}
 
-        <label>{{ "Nova imagem (deixe vazio para manter a atual):" if editando else "Imagem:" }}
-            <input type="file"
-                   name="imagem"
-                   accept=".jpg,.jpeg,.png,.webp">
-        </label>
-        <br>
+        <form action="{{ '/produtos/' + editando.id|string + '/editar' if editando else '/produtos/novo' }}"
+              method="post"
+              enctype="multipart/form-data">
 
-        <button type="submit">
-            {{ "Salvar alterações" if editando else "Criar produto" }}
-        </button>
-        <a href="/produtos">Cancelar</a>
-    </form>
-</body>
-</html>
+            <div class="form-group">
+                <label class="form-label">Nome</label>
+                <input type="text"
+                       name="nome"
+                       class="form-control"
+                       value="{{ editando.nome if editando else (valores.nome if valores else '') }}"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Categoria</label>
+                <select name="categoria_id" class="form-control">
+                    <option value="0">Sem categoria</option>
+                    {% for c in categorias %}
+                        <option value="{{ c.id }}"
+                            {{ 'selected' if (editando and editando.categoria_id == c.id) or (valores and valores.categoria_id == c.id) else '' }}>
+                            {{ c.nome }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Preço Regular</label>
+                    <input type="number"
+                           name="preco"
+                           class="form-control"
+                           step="0.01"
+                           min="0"
+                           value="{{ editando.preco if editando else (valores.preco if valores else '') }}"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Preço Associado</label>
+                    <input type="number"
+                           name="preco_associado"
+                           class="form-control"
+                           step="0.01"
+                           min="0"
+                           placeholder="Ex: 14.90">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Estoque (opcional)</label>
+                <input type="number"
+                       name="estoque_atual"
+                       class="form-control"
+                       min="0"
+                       value="{{ editando.estoque_atual if editando else (valores.estoque_atual if valores else '0') }}">
+            </div>
+
+            <!-- Imagem (Mantido para suportar o backend) -->
+            <div class="form-group" style="margin-top: 16px;">
+                <label class="form-label">{{ "Nova imagem (deixe vazio para manter):" if editando else "Imagem do Produto:" }}</label>
+                <input type="file"
+                       name="imagem"
+                       class="form-control"
+                       style="padding: 9px 16px;"
+                       accept=".jpg,.jpeg,.png,.webp">
+                
+                {% if editando and editando.imagem_path %}
+                    <div class="current-image-preview">
+                        <img src="/static/{{ editando.imagem_path }}"
+                             alt="{{ editando.nome }}"
+                             style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn-submit">
+                {{ "Salvar Produto" if editando else "Criar Produto" }}
+            </button>
+
+        </form>
+
+    </div>
+</div>
+{% endblock %}

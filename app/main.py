@@ -20,10 +20,16 @@ app.include_router(usuario_controller.router)
 app.include_router(categoria_controller.router)
 app.include_router(produto_controller.router)
 
+from sqlalchemy.orm import Session
+from app.database import get_db
+from app.models.produto import Produto
+from app.models.categoria import Categoria
+
 @app.get("/")
 def tela_inicial(
     request: Request,
-    usuario = Depends(get_usuario_opcional)
+    usuario = Depends(get_usuario_opcional),
+    db: Session = Depends(get_db)
 ):
     #Tela não logado
     if usuario is None:
@@ -32,11 +38,21 @@ def tela_inicial(
             "/auth/login.html",
             {"request": request}
         )
+    
+    # Buscar produtos e categorias
+    produtos = db.query(Produto).filter(Produto.ativo == True).all()
+    categorias = db.query(Categoria).filter(Categoria.ativo == True).all()
+
     #logado - exibir a tela de funcionario
     return templates.TemplateResponse(
         request,
         "home.html",
-        {"request": request, "usuario": usuario}
+        {
+            "request": request, 
+            "usuario": usuario,
+            "produtos": produtos,
+            "categorias": categorias
+        }
     )
 
 @app.get("/painel", response_class=HTMLResponse)

@@ -1,457 +1,403 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDV — AAPM PDV</title>
-    <!-- CSS Principal -->
-    <link rel="stylesheet" href="/static/dashboard.css">
-    <!-- Lucide Icons para ícones profissionais -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        /* Estilos adicionais para itens do carrinho dinâmicos */
-        .cart-items-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            list-style: none;
-            width: 100%;
-        }
+{% extends "base.html" %}
 
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #f8fafc;
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            animation: slide-in 0.2s ease;
-        }
+{% block title %}PDV — AAPM PDV{% endblock %}
 
-        @keyframes slide-in {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+{% block content %}
+<style>
+    /* Estilos adicionais para itens do carrinho dinâmicos */
+    .cart-items-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        list-style: none;
+        width: 100%;
+    }
 
-        .cart-item-details {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            flex: 1;
-        }
+    .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f8fafc;
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        animation: slide-in 0.2s ease;
+    }
 
-        .cart-item-name {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
+    @keyframes slide-in {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 
-        .cart-item-price {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--accent-color);
-        }
+    .cart-item-details {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+    }
 
-        .cart-item-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    .cart-item-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
 
-        .quantity-control {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background-color: #ffffff;
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 2px 8px;
-        }
+    .cart-item-price {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--accent-color);
+    }
 
-        .qty-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 16px;
-            height: 16px;
-            transition: color 0.2s;
-        }
+    .cart-item-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
 
-        .qty-btn:hover {
-            color: var(--accent-color);
-        }
+    .quantity-control {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background-color: #ffffff;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 2px 8px;
+    }
 
-        .qty-val {
-            font-size: 12px;
-            font-weight: 600;
-            min-width: 14px;
-            text-align: center;
-        }
+    .qty-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 16px;
+        height: 16px;
+        transition: color 0.2s;
+    }
 
-        .remove-item-btn {
-            background: none;
-            border: none;
-            color: #ef4444;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 4px;
-            border-radius: 6px;
-            transition: background-color 0.2s;
-        }
+    .qty-btn:hover {
+        color: var(--accent-color);
+    }
 
-        .remove-item-btn:hover {
-            background-color: #fee2e2;
-        }
-    </style>
-</head>
-<body>
+    .qty-val {
+        font-size: 12px;
+        font-weight: 600;
+        min-width: 14px;
+        text-align: center;
+    }
 
-    <!-- HEADER / BARRA SUPERIOR -->
-    <header class="main-header">
-        <div class="header-left">
-            <div class="logo">
-                <span class="logo-icon"><i data-lucide="graduation-cap"></i></span>
-                <span>AAPM PDV</span>
-            </div>
-            
-            <!-- Menu de Abas -->
-            <nav class="main-nav">
-                <a href="/" class="nav-item active">
-                    <i data-lucide="shopping-cart"></i>
-                    <span>PDV</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i data-lucide="history"></i>
-                    <span>Histórico</span>
-                </a>
-                <a href="/produtos" class="nav-item">
-                    <i data-lucide="package"></i>
-                    <span>Produtos</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i data-lucide="archive"></i>
-                    <span>Armários</span>
-                </a>
-                <a href="/painel" class="nav-item">
-                    <i data-lucide="layout-dashboard"></i>
-                    <span>Painel</span>
-                </a>
-                <a href="/usuarios/" class="nav-item">
-                    <i data-lucide="users"></i>
-                    <span>Usuários</span>
-                </a>
-            </nav>
-        </div>
+    .remove-item-btn {
+        background: none;
+        border: none;
+        color: #ef4444;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px;
+        border-radius: 6px;
+        transition: background-color 0.2s;
+    }
 
-        <div class="header-right">
-            <!-- Usuário Logado -->
-            <div class="user-profile">
-                <div class="user-info">
-                    <span class="user-name">{{ usuario.nome if usuario else 'Administrador' }}</span>
-                    <span class="user-role">{{ usuario.role|capitalize if usuario else 'Admin' }}</span>
-                </div>
-                <div class="user-avatar">
-                    {{ (usuario.nome[0]|upper) if usuario else 'A' }}
-                </div>
-            </div>
+    .remove-item-btn:hover {
+        background-color: #fee2e2;
+    }
+</style>
 
-            <!-- Logout -->
-            <a href="/auth/logout" class="logout-btn" title="Sair">
-                <i data-lucide="log-out"></i>
-            </a>
-        </div>
-    </header>
-
-    <!-- CORPO PRINCIPAL (PDV + CARRINHO) -->
-    <div class="app-container">
+<!-- CORPO PRINCIPAL (PDV + CARRINHO) -->
+<div class="app-container">
+    
+    <!-- SEÇÃO DO PDV (ESQUERDA) -->
+    <main class="pdv-section">
         
-        <!-- SEÇÃO DO PDV (ESQUERDA) -->
-        <main class="pdv-section">
+        <!-- Barra de Busca -->
+        <div class="search-container">
+            <i data-lucide="search" class="search-icon"></i>
+            <input 
+                type="text" 
+                id="search-input" 
+                class="search-input" 
+                placeholder="Buscar produto..."
+                autocomplete="off"
+            >
+        </div>
+
+        <!-- Categorias -->
+        <div class="categories-container">
+            <button class="category-btn active" data-category="all">Todos</button>
+            {% for c in categorias %}
+            <button class="category-btn" data-category="{{ c.nome }}">{{ c.nome }}</button>
+            {% endfor %}
+        </div>
+
+        <!-- Grid de Produtos -->
+        <div class="products-grid" id="products-grid">
+            <!-- Produtos inseridos dinamicamente por JS para interatividade total -->
+        </div>
+
+    </main>
+
+    <!-- SEÇÃO DO CARRINHO (DIREITA) -->
+    <aside class="cart-section">
+        
+        <!-- Cabeçalho do Carrinho -->
+        <div class="cart-header">
+            <h2 class="cart-title">
+                <i data-lucide="shopping-bag"></i>
+                <span>Carrinho</span>
+            </h2>
             
-            <!-- Barra de Busca -->
-            <div class="search-container">
-                <i data-lucide="search" class="search-icon"></i>
-                <input 
-                    type="text" 
-                    id="search-input" 
-                    class="search-input" 
-                    placeholder="Buscar produto..."
-                    autocomplete="off"
-                >
+            <!-- Toggle Cliente -->
+            <div class="client-association">
+                <span>Cliente não associado</span>
+                <label class="switch">
+                    <input type="checkbox" id="client-toggle">
+                    <span class="slider"></span>
+                </label>
             </div>
+        </div>
 
-            <!-- Categorias -->
-            <div class="categories-container">
-                <button class="category-btn active" data-category="all">Todos</button>
-                <button class="category-btn" data-category="Cadernos">Cadernos</button>
-                <button class="category-btn" data-category="Lápis e Canetas">Lápis e Canetas</button>
-                <button class="category-btn" data-category="Papéis">Papéis</button>
-                <button class="category-btn" data-category="Acessórios">Acessórios</button>
-                <button class="category-btn" data-category="Mochilas">Mochilas</button>
-                <button class="category-btn" data-category="Kits">Kits</button>
-            </div>
-
-            <!-- Grid de Produtos -->
-            <div class="products-grid" id="products-grid">
-                <!-- Produtos inseridos dinamicamente por JS para interatividade total -->
-            </div>
-
-        </main>
-
-        <!-- SEÇÃO DO CARRINHO (DIREITA) -->
-        <aside class="cart-section">
+        <!-- Itens do Carrinho (Central) -->
+        <div class="cart-content" id="cart-content">
             
-            <!-- Cabeçalho do Carrinho -->
-            <div class="cart-header">
-                <h2 class="cart-title">
-                    <i data-lucide="shopping-bag"></i>
-                    <span>Carrinho</span>
-                </h2>
-                
-                <!-- Toggle Cliente -->
-                <div class="client-association">
-                    <span>Cliente não associado</span>
-                    <label class="switch">
-                        <input type="checkbox" id="client-toggle">
-                        <span class="slider"></span>
-                    </label>
-                </div>
+            <!-- Estado Vazio Inicial -->
+            <div class="empty-cart" id="empty-cart-state">
+                <i data-lucide="shopping-bag" class="empty-cart-icon"></i>
+                <p>Carrinho vazio<br>Clique nos produtos para adicionar</p>
             </div>
 
-            <!-- Itens do Carrinho (Central) -->
-            <div class="cart-content" id="cart-content">
-                
-                <!-- Estado Vazio Inicial -->
-                <div class="empty-cart" id="empty-cart-state">
-                    <i data-lucide="shopping-bag" class="empty-cart-icon"></i>
-                    <p>Carrinho vazio<br>Clique nos produtos para adicionar</p>
-                </div>
+            <!-- Lista de itens (inicia escondida) -->
+            <ul class="cart-items-list" id="cart-items-list" style="display: none;">
+                <!-- Preenchido dinamicamente -->
+            </ul>
 
-                <!-- Lista de itens (inicia escondida) -->
-                <ul class="cart-items-list" id="cart-items-list" style="display: none;">
-                    <!-- Preenchido dinamicamente -->
-                </ul>
+        </div>
 
+        <!-- Rodapé do Carrinho -->
+        <div class="cart-footer">
+            <div class="cart-total-row">
+                <span class="total-label">Total</span>
+                <span class="total-amount" id="cart-total">R$ 0,00</span>
             </div>
+            <button class="checkout-btn" id="checkout-btn" disabled>
+                Finalizar Venda
+            </button>
+        </div>
 
-            <!-- Rodapé do Carrinho -->
-            <div class="cart-footer">
-                <div class="cart-total-row">
-                    <span class="total-label">Total</span>
-                    <span class="total-amount" id="cart-total">R$ 0,00</span>
+    </aside>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Script de Lógica Interativa do PDV -->
+<script>
+    // Dados injetados do Python/Banco de Dados
+    const productsData = [
+        {% for p in produtos %}
+        { 
+            id: {{ p.id }}, 
+            name: "{{ p.nome }}", 
+            category: "{{ p.categoria.nome if p.categoria else 'Sem Categoria' }}", 
+            price: {{ p.preco }},
+            imagem: "{{ p.imagem_url if p.imagem_url else '' }}"
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    // Estado do Carrinho
+    let cart = [];
+
+    // Elementos do DOM
+    const productsGrid = document.getElementById('products-grid');
+    const searchInput = document.getElementById('search-input');
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    const emptyCartState = document.getElementById('empty-cart-state');
+    const cartItemsList = document.getElementById('cart-items-list');
+    const cartTotal = document.getElementById('cart-total');
+    const checkoutBtn = document.getElementById('checkout-btn');
+
+    // Filtros Atuais
+    let currentSearch = "";
+    let currentCategory = "all";
+
+    // Renderizar Grid de Produtos
+    function renderProducts() {
+        productsGrid.innerHTML = "";
+        
+        const filteredProducts = productsData.filter(product => {
+            const matchesSearch = product.name.toLowerCase().includes(currentSearch.toLowerCase());
+            const matchesCategory = currentCategory === "all" || product.category === currentCategory;
+            return matchesSearch && matchesCategory;
+        });
+
+        if (filteredProducts.length === 0) {
+            productsGrid.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">
+                    Nenhum produto encontrado.
                 </div>
-                <button class="checkout-btn" id="checkout-btn" disabled>
-                    Finalizar Venda
-                </button>
-            </div>
+            `;
+            return;
+        }
 
-        </aside>
-
-    </div>
-
-    <!-- Script de Lógica Interativa do PDV -->
-    <script>
-        // Dados Mockados dos Produtos (idênticos ao protótipo do usuário)
-        const productsData = [
-            { id: 1, name: "Caderno 96 folhas", category: "Cadernos", price: 18.90 },
-            { id: 2, name: "Caderno 200 folhas", category: "Cadernos", price: 32.90 },
-            { id: 3, name: "Caderno Desenho", category: "Cadernos", price: 15.90 },
-            { id: 4, name: "Lápis Preto (cx 12)", category: "Lápis e Canetas", price: 12.90 },
-            { id: 5, name: "Caneta Azul", category: "Lápis e Canetas", price: 3.50 },
-            { id: 6, name: "Caneta Vermelha", category: "Lápis e Canetas", price: 3.50 },
-            { id: 7, name: "Lápis de Cor (cx 24)", category: "Lápis e Canetas", price: 24.90 },
-            { id: 8, name: "Canetinha (cx 12)", category: "Lápis e Canetas", price: 18.90 },
-            { id: 9, name: "Papel Sulfite A4 (500)", category: "Papéis", price: 28.90 },
-            { id: 10, name: "Papel Cartão Color", category: "Papéis", price: 8.90 }
-        ];
-
-        // Estado do Carrinho
-        let cart = [];
-
-        // Elementos do DOM
-        const productsGrid = document.getElementById('products-grid');
-        const searchInput = document.getElementById('search-input');
-        const categoryButtons = document.querySelectorAll('.category-btn');
-        const emptyCartState = document.getElementById('empty-cart-state');
-        const cartItemsList = document.getElementById('cart-items-list');
-        const cartTotal = document.getElementById('cart-total');
-        const checkoutBtn = document.getElementById('checkout-btn');
-
-        // Filtros Atuais
-        let currentSearch = "";
-        let currentCategory = "all";
-
-        // Renderizar Grid de Produtos
-        function renderProducts() {
-            productsGrid.innerHTML = "";
+        filteredProducts.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.onclick = () => addToCart(product.id);
             
-            const filteredProducts = productsData.filter(product => {
-                const matchesSearch = product.name.toLowerCase().includes(currentSearch.toLowerCase());
-                const matchesCategory = currentCategory === "all" || product.category === currentCategory;
-                return matchesSearch && matchesCategory;
-            });
-
-            if (filteredProducts.length === 0) {
-                productsGrid.innerHTML = `
-                    <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">
-                        Nenhum produto encontrado.
-                    </div>
+            let imagemHtml = `
+                <div class="product-image-placeholder">
+                    <i data-lucide="image"></i>
+                </div>
+            `;
+            // Usa tag img apenas se não for o placeholder padrão do backend.
+            if (product.imagem && product.imagem !== "None" && product.imagem !== "" && !product.imagem.includes("produto-placeholder.png")) {
+                imagemHtml = `
+                <img src="${product.imagem}" alt="${product.name}" 
+                     style="width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px;"
+                     onerror="this.outerHTML='<div class=\\'product-image-placeholder\\'><i data-lucide=\\'image\\'></i></div>'; setTimeout(() => lucide.createIcons(), 10);">
                 `;
-                return;
             }
 
-            filteredProducts.forEach(product => {
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                card.onclick = () => addToCart(product.id);
+            card.innerHTML = `
+                ${imagemHtml}
+                <div class="product-info">
+                    <span class="product-name" title="${product.name}">${product.name}</span>
+                    <span class="product-category">${product.category}</span>
+                </div>
+                <div class="product-footer">
+                    <span class="product-price">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
+                    <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart(${product.id})">
+                        <i data-lucide="shopping-cart"></i>
+                    </button>
+                </div>
+            `;
+            
+            productsGrid.appendChild(card);
+        });
+
+        // Recriar ícones do Lucide
+        lucide.createIcons();
+    }
+
+    // Adicionar Produto ao Carrinho
+    function addToCart(productId) {
+        const product = productsData.find(p => p.id === productId);
+        if (!product) return;
+
+        const existingItem = cart.find(item => item.product.id === productId);
+
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({
+                product: product,
+                quantity: 1
+            });
+        }
+
+        updateCartUI();
+    }
+
+    // Alterar Quantidade
+    function changeQuantity(productId, delta) {
+        const item = cart.find(item => item.product.id === productId);
+        if (!item) return;
+
+        item.quantity += delta;
+
+        if (item.quantity <= 0) {
+            cart = cart.filter(item => item.product.id !== productId);
+        }
+
+        updateCartUI();
+    }
+
+    // Remover Item do Carrinho
+    function removeFromCart(productId) {
+        cart = cart.filter(item => item.product.id !== productId);
+        updateCartUI();
+    }
+
+    // Atualizar Interface do Carrinho
+    function updateCartUI() {
+        if (cart.length === 0) {
+            emptyCartState.style.display = 'flex';
+            cartItemsList.style.display = 'none';
+            cartTotal.textContent = "R$ 0,00";
+            
+            checkoutBtn.disabled = true;
+            checkoutBtn.classList.remove('active');
+        } else {
+            emptyCartState.style.display = 'none';
+            cartItemsList.style.display = 'flex';
+            
+            cartItemsList.innerHTML = "";
+            let total = 0;
+
+            cart.forEach(item => {
+                total += item.product.price * item.quantity;
                 
-                card.innerHTML = `
-                    <div class="product-image-placeholder">
-                        <i data-lucide="image"></i>
+                const li = document.createElement('li');
+                li.className = 'cart-item';
+                
+                li.innerHTML = `
+                    <div class="cart-item-details">
+                        <span class="cart-item-name">${item.product.name}</span>
+                        <span class="cart-item-price">R$ ${(item.product.price * item.quantity).toFixed(2).replace('.', ',')}</span>
                     </div>
-                    <div class="product-info">
-                        <span class="product-name" title="${product.name}">${product.name}</span>
-                        <span class="product-category">${product.category}</span>
-                    </div>
-                    <div class="product-footer">
-                        <span class="product-price">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
-                        <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart(${product.id})">
-                            <i data-lucide="shopping-cart"></i>
+                    <div class="cart-item-actions">
+                        <div class="quantity-control">
+                            <button class="qty-btn" onclick="changeQuantity(${item.product.id}, -1)">
+                                <i data-lucide="minus" style="width:12px;height:12px;"></i>
+                            </button>
+                            <span class="qty-val">${item.quantity}</span>
+                            <button class="qty-btn" onclick="changeQuantity(${item.product.id}, 1)">
+                                <i data-lucide="plus" style="width:12px;height:12px;"></i>
+                            </button>
+                        </div>
+                        <button class="remove-item-btn" onclick="removeFromCart(${item.product.id})">
+                            <i data-lucide="trash-2" style="width:14px;height:14px;"></i>
                         </button>
                     </div>
                 `;
                 
-                productsGrid.appendChild(card);
+                cartItemsList.appendChild(li);
             });
 
-            // Recriar ícones do Lucide
-            lucide.createIcons();
+            cartTotal.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+            
+            checkoutBtn.disabled = false;
+            checkoutBtn.classList.add('active');
         }
 
-        // Adicionar Produto ao Carrinho
-        function addToCart(productId) {
-            const product = productsData.find(p => p.id === productId);
-            if (!product) return;
+        lucide.createIcons();
+    }
 
-            const existingItem = cart.find(item => item.product.id === productId);
+    // Event Listeners
+    // Busca
+    searchInput.addEventListener('input', (e) => {
+        currentSearch = e.target.value;
+        renderProducts();
+    });
 
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({
-                    product: product,
-                    quantity: 1
-                });
-            }
-
-            updateCartUI();
-        }
-
-        // Alterar Quantidade
-        function changeQuantity(productId, delta) {
-            const item = cart.find(item => item.product.id === productId);
-            if (!item) return;
-
-            item.quantity += delta;
-
-            if (item.quantity <= 0) {
-                cart = cart.filter(item => item.product.id !== productId);
-            }
-
-            updateCartUI();
-        }
-
-        // Remover Item do Carrinho
-        function removeFromCart(productId) {
-            cart = cart.filter(item => item.product.id !== productId);
-            updateCartUI();
-        }
-
-        // Atualizar Interface do Carrinho
-        function updateCartUI() {
-            if (cart.length === 0) {
-                emptyCartState.style.display = 'flex';
-                cartItemsList.style.display = 'none';
-                cartTotal.textContent = "R$ 0,00";
-                
-                checkoutBtn.disabled = true;
-                checkoutBtn.classList.remove('active');
-            } else {
-                emptyCartState.style.display = 'none';
-                cartItemsList.style.display = 'flex';
-                
-                cartItemsList.innerHTML = "";
-                let total = 0;
-
-                cart.forEach(item => {
-                    total += item.product.price * item.quantity;
-                    
-                    const li = document.createElement('li');
-                    li.className = 'cart-item';
-                    
-                    li.innerHTML = `
-                        <div class="cart-item-details">
-                            <span class="cart-item-name">${item.product.name}</span>
-                            <span class="cart-item-price">R$ ${(item.product.price * item.quantity).toFixed(2).replace('.', ',')}</span>
-                        </div>
-                        <div class="cart-item-actions">
-                            <div class="quantity-control">
-                                <button class="qty-btn" onclick="changeQuantity(${item.product.id}, -1)">
-                                    <i data-lucide="minus" style="width:12px;height:12px;"></i>
-                                </button>
-                                <span class="qty-val">${item.quantity}</span>
-                                <button class="qty-btn" onclick="changeQuantity(${item.product.id}, 1)">
-                                    <i data-lucide="plus" style="width:12px;height:12px;"></i>
-                                </button>
-                            </div>
-                            <button class="remove-item-btn" onclick="removeFromCart(${item.product.id})">
-                                <i data-lucide="trash-2" style="width:14px;height:14px;"></i>
-                            </button>
-                        </div>
-                    `;
-                    
-                    cartItemsList.appendChild(li);
-                });
-
-                cartTotal.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
-                
-                checkoutBtn.disabled = false;
-                checkoutBtn.classList.add('active');
-            }
-
-            lucide.createIcons();
-        }
-
-        // Event Listeners
-        // Busca
-        searchInput.addEventListener('input', (e) => {
-            currentSearch = e.target.value;
+    // Filtro de Categoria
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            currentCategory = button.getAttribute('data-category');
             renderProducts();
         });
+    });
 
-        // Filtro de Categoria
-        categoryButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                categoryButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                
-                currentCategory = button.getAttribute('data-category');
-                renderProducts();
-            });
-        });
-
-        // Inicialização
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-            renderProducts();
-        });
-    </script>
-</body>
-</html>
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+        renderProducts();
+    });
+</script>
+{% endblock %}
