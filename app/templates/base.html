@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}AAPM PDV{% endblock %}
+    </title>
+
+    <!-- CSS -->
+    <link
+        rel="stylesheet"
+        href="/static/style.css"
+    >
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                🎓
+            </div>
+
+            <h2>AAPM</h2>
+
+        </div>
+
+        <!-- MENU -->
+        <nav class="menu">
+
+            <a href="/">
+                Dashboard
+            </a>
+
+            <a href="/usuarios">
+                Usuários
+            </a>
+
+            <a href="/categorias">
+                Categorias
+            </a>
+
+            <a href="/produtos">
+                Produtos
+            </a>
+
+        </nav>
+
+        <!-- LOGOUT -->
+        <a
+            href="/logout"
+            class="logout"
+        >
+            Sair
+        </a>
+
+    </aside>
+
+    <!-- CONTEÚDO -->
+    <main class="content">
+
+        <!-- TOPO -->
+        <header class="topbar">
+
+            <h1>
+                {% block page_title %}
+                    Dashboard
+                {% endblock %}
+            </h1>
+
+        </header>
+
+        <!-- CONTEUDO -->
+        <section class="page-content">
+
+            {% block content %}
+            {% endblock %}
+
+        </section>
+
+    </main>
+
+</body>
+</html>

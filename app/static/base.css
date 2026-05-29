@@ -1,0 +1,156 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+
+    background:
+        linear-gradient(
+            180deg,
+            #1f2f98,
+            #111b63
+        );
+
+    color: white;
+
+    min-height: 100vh;
+
+    display: flex;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    width: 250px;
+
+    background: rgba(0,0,0,0.25);
+
+    backdrop-filter: blur(10px);
+
+    padding: 30px 20px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    border-right:
+        1px solid rgba(255,255,255,0.1);
+}
+
+/* LOGO */
+
+.logo{
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+
+    margin-bottom: 50px;
+}
+
+.logo-icon{
+    width: 55px;
+    height: 55px;
+
+    background: #ff7a29;
+
+    border-radius: 14px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 24px;
+}
+
+.logo h2{
+    font-size: 28px;
+}
+
+/* MENU */
+
+.menu{
+    display: flex;
+    flex-direction: column;
+
+    gap: 20px;
+}
+
+.menu a{
+    text-decoration: none;
+
+    color: white;
+
+    padding: 15px;
+
+    border-radius: 12px;
+
+    transition: 0.3s;
+
+    font-size: 18px;
+}
+
+.menu a:hover{
+    background: rgba(255,255,255,0.1);
+
+    transform: translateX(5px);
+}
+
+/* LOGOUT */
+
+.logout{
+    text-decoration: none;
+
+    background: #ff7a29;
+
+    color: white;
+
+    text-align: center;
+
+    padding: 15px;
+
+    border-radius: 12px;
+
+    font-weight: bold;
+
+    transition: 0.3s;
+}
+
+.logout:hover{
+    background: #eb6d21;
+}
+
+/* CONTEUDO */
+
+.content{
+    flex: 1;
+
+    padding: 30px;
+}
+
+/* TOPO */
+
+.topbar{
+    margin-bottom: 30px;
+}
+
+.topbar h1{
+    font-size: 38px;
+}
+
+/* PÁGINA */
+
+.page-content{
+    background: rgba(255,255,255,0.08);
+
+    border-radius: 20px;
+
+    padding: 30px;
+
+    backdrop-filter: blur(10px);
+
+    min-height: 80vh;
+}
