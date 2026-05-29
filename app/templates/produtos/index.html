@@ -1,0 +1,96 @@
+<!-- templates/produtos/index.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Produtos — AAPM SENAI</title>
+</head>
+<body>
+    <h1>Produtos</h1>
+
+    {% if request.query_params.get('criado') == 'ok' %}
+        <p style="color:green">Produto criado com sucesso!</p>
+    {% endif %}
+    {% if request.query_params.get('desativado') == 'ok' %}
+        <p style="color:green">Produto desativado.</p>
+    {% endif %}
+
+    <!-- Filtros -->
+    <form method="get" action="/produtos">
+        <input  type="text"
+                name="busca"
+                placeholder="Buscar por nome..."
+                value="{{ busca }}">
+
+        <select name="categoria_id">
+            <option value="0">Todas as categorias</option>
+            {% for c in categorias %}
+                <option value="{{ c.id }}"
+                    {{ 'selected' if categoria_id == c.id else '' }}>
+                    {{ c.nome }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Filtrar</button>
+
+        {% if busca or categoria_id %}
+            <a href="/produtos">Limpar</a>
+        {% endif %}
+    </form>
+
+    {% if usuario.role == 'admin' %}
+        <a href="/produtos/novo">+ Novo produto</a>
+    {% endif %}
+
+    <table border="1" cellpadding="8">
+        <thead>
+            <tr>
+                <th>Imagem</th>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Preço</th>
+                <th>Estoque</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in produtos %}
+            <tr>
+                <td>
+                    <img src="{{ p.imagem_url }}"
+                         alt="{{ p.nome }}"
+                         width="50" height="50"
+                         style="object-fit:cover">
+                </td>
+                <td><a href="/produtos/{{ p.id }}">{{ p.nome }}</a></td>
+                <td>{{ p.categoria.nome if p.categoria else "—" }}</td>
+                <td>R$ {{ "%.2f"|format(p.preco) }}</td>
+                <td>{{ p.estoque_atual }}</td>
+                <td>
+                    {% if usuario.role == 'admin' %}
+                        <a href="/produtos/{{ p.id }}/editar">Editar</a>
+                        <form action="/produtos/{{ p.id }}/desativar"
+                              method="post"
+                              style="display:inline"
+                              onsubmit="return confirm('Desativar {{ p.nome }}?')">
+                            <button type="submit">Desativar</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+
+            {% if not produtos %}
+            <tr>
+                <td colspan="6" style="text-align:center">
+                    Nenhum produto encontrado.
+                </td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <p><a href="/">← Dashboard</a></p>
+</body>
+</html>

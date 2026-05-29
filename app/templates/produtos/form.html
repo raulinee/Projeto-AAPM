@@ -1,0 +1,86 @@
+<!-- templates/produtos/form.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ "Editar" if editando else "Novo" }} Produto — AAPM SENAI</title>
+</head>
+<body>
+    <h1>{{ "Editar produto" if editando else "Novo produto" }}</h1>
+
+    {% if erro %}
+        <p style="color:red">{{ erro }}</p>
+    {% endif %}
+
+    <!--
+        enctype="multipart/form-data" é obrigatório para envio de arquivos.
+        Sem ele o FastAPI não consegue ler o UploadFile.
+    -->
+    <form action="{{ '/produtos/' + editando.id|string + '/editar' if editando else '/produtos/novo' }}"
+          method="post"
+          enctype="multipart/form-data">
+
+        <label>Nome:
+            <input type="text"
+                   name="nome"
+                   value="{{ editando.nome if editando else (valores.nome if valores else '') }}"
+                   required>
+        </label>
+        <br>
+
+        <label>Preço (R$):
+            <input type="number"
+                   name="preco"
+                   step="0.01"
+                   min="0"
+                   value="{{ editando.preco if editando else (valores.preco if valores else '0.00') }}"
+                   required>
+        </label>
+        <br>
+
+        <label>Estoque atual:
+            <input type="number"
+                   name="estoque_atual"
+                   min="0"
+                   value="{{ editando.estoque_atual if editando else (valores.estoque_atual if valores else '0') }}"
+                   required>
+        </label>
+        <br>
+
+        <label>Categoria:
+            <select name="categoria_id">
+                <option value="0">Sem categoria</option>
+                {% for c in categorias %}
+                    <option value="{{ c.id }}"
+                        {{ 'selected' if (editando and editando.categoria_id == c.id) or (valores and valores.categoria_id == c.id) else '' }}>
+                        {{ c.nome }}
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+        <br>
+
+        <!-- Imagem atual na edição -->
+        {% if editando and editando.imagem_path %}
+            <p>Imagem atual:</p>
+            <img src="{{ editando.imagem_url }}"
+                 alt="{{ editando.nome }}"
+                 width="100"
+                 style="object-fit:cover">
+            <br>
+        {% endif %}
+
+        <label>{{ "Nova imagem (deixe vazio para manter a atual):" if editando else "Imagem:" }}
+            <input type="file"
+                   name="imagem"
+                   accept=".jpg,.jpeg,.png,.webp">
+        </label>
+        <br>
+
+        <button type="submit">
+            {{ "Salvar alterações" if editando else "Criar produto" }}
+        </button>
+        <a href="/produtos">Cancelar</a>
+    </form>
+</body>
+</html>

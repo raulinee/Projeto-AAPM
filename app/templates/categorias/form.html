@@ -1,0 +1,52 @@
+<!-- templates/categorias/form.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ "Editar" if editando else "Nova" }} Categoria — AAPM SENAI</title>
+</head>
+<body>
+    <h1>{{ "Editar categoria" if editando else "Nova categoria" }}</h1>
+
+    {% if erro %}
+        <p style="color:red">{{ erro }}</p>
+    {% endif %}
+
+    <form action="{{ '/categorias/' + editando.id|string + '/editar' if editando else '/categorias/nova' }}"
+          method="post">
+
+        <label>Nome:
+            <input type="text"
+                   name="nome"
+                   value="{{ editando.nome if editando else (valores.nome if valores else '') }}"
+                   required
+                   autofocus>
+        </label>
+        <br>
+
+        <button type="submit">
+            {{ "Salvar alterações" if editando else "Criar categoria" }}
+        </button>
+        <a href="/categorias">Cancelar</a>
+    </form>
+
+    <!--
+        Na edição, exibe os produtos vinculados para o admin
+        ter contexto antes de fazer alterações.
+    -->
+    {% if editando and editando.produtos %}
+        <hr>
+        <h3>Produtos vinculados a esta categoria</h3>
+        <ul>
+            {% for p in editando.produtos if p.ativo %}
+                <li>
+                    <a href="/produtos/{{ p.id }}">{{ p.nome }}</a>
+                    — R$ {{ "%.2f"|format(p.preco) }}
+                </li>
+            {% else %}
+                <li>Nenhum produto ativo vinculado.</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!-- templates/produtos/detalhe.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ produto.nome }} — AAPM SENAI</title>
+</head>
+<body>
+    {% if request.query_params.get('editado') == 'ok' %}
+        <p style="color:green">Produto atualizado com sucesso!</p>
+    {% endif %}
+
+    <img src="{{ produto.imagem_url }}"
+         alt="{{ produto.nome }}"
+         width="200"
+         style="object-fit:cover">
+
+    <h1>{{ produto.nome }}</h1>
+
+    <p>Categoria: {{ produto.categoria.nome if produto.categoria else "—" }}</p>
+
+    <table border="1" cellpadding="8">
+        <tr><td><strong>Preço</strong></td>
+            <td>R$ {{ "%.2f"|format(produto.preco) }}</td></tr>
+        <tr><td><strong>Estoque atual</strong></td>
+            <td>{{ produto.estoque_atual }}</td></tr>
+    </table>
+
+    {% if request.query_params.get('movimentacao') == 'ok' %}
+        <p style="color:green">Movimentação registrada com sucesso!</p>
+    {% endif %}
+
+    <!-- Links de movimentação -->
+    <a href="/movimentacoes/nova?produto_id={{ produto.id }}">
+        + Registrar movimentação
+    </a>
+    &nbsp;|&nbsp;
+    <a href="/movimentacoes/produto/{{ produto.id }}">
+        Ver histórico completo
+    </a>
+
+    {% if usuario.role == 'admin' %}
+        <a href="/produtos/{{ produto.id }}/editar">Editar</a>
+    {% endif %}
+
+    <a href="/produtos">← Voltar</a>
+</body>
+</html>

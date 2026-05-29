@@ -1,0 +1,79 @@
+<!-- templates/categorias/index.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Categorias — AAPM SENAI</title>
+</head>
+<body>
+    <h1>Categorias</h1>
+
+    {% if request.query_params.get('criado') == 'ok' %}
+        <p style="color:green">Categoria criada com sucesso!</p>
+    {% endif %}
+
+    {% if request.query_params.get('editado') == 'ok' %}
+        <p style="color:green">Categoria atualizada com sucesso!</p>
+    {% endif %}
+
+    {% if request.query_params.get('erro') == 'produtos_vinculados' %}
+        <p style="color:red">
+            Não é possível desativar "{{ request.query_params.get('categoria') }}"
+            pois ela possui produtos ativos vinculados.
+            Desative ou mova os produtos antes.
+        </p>
+    {% endif %}
+
+    <a href="/categorias/nova">+ Nova categoria</a>
+
+    <table border="1" cellpadding="8">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Produtos ativos</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in categorias %}
+            <tr>
+                <td>{{ c.nome }}</td>
+
+                <!--
+                    c.produtos vem do relationship definido no model.
+                    Filtramos em Python para contar apenas os ativos.
+                -->
+                <td>
+                    {{ c.produtos | selectattr('ativo') | list | length }}
+                </td>
+
+                <td>{{ "Ativa" if c.ativo else "Inativa" }}</td>
+
+                <td>
+                    <a href="/categorias/{{ c.id }}/editar">Editar</a>
+
+                    <form action="/categorias/{{ c.id }}/toggle-ativo"
+                          method="post"
+                          style="display:inline">
+                        <button type="submit">
+                            {{ "Desativar" if c.ativo else "Ativar" }}
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+
+            {% if not categorias %}
+            <tr>
+                <td colspan="4" style="text-align:center">
+                    Nenhuma categoria cadastrada.
+                </td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <p><a href="/">← Dashboard</a></p>
+</body>
+</html>
