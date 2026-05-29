@@ -25,7 +25,7 @@ def tela_inicial(
     if usuario is None:
         return templates.TemplateResponse(
             request,
-            "painel/index.html",
+            "/auth/login.html",
             {"request": request}
         )
     #logado - exibir a tela de funcionario
@@ -39,14 +39,11 @@ def tela_inicial(
 async def painel(request: Request):
 
     return templates.TemplateResponse(
+        request,
         "painel.html",
         {"request": request}
     )
 
 @app.get("/usuarios", response_class=HTMLResponse)
-async def usuarios(request: Request):
-
-    return templates.TemplateResponse(
-        "usuarios.html",
-        {"request": request}
-    )
+async def usuarios_redirect():
+    return RedirectResponse(url="/usuarios/")
