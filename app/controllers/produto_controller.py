@@ -238,7 +238,7 @@ async def editar_produto(
 
     db.commit()
 
-    return RedirectResponse(url=f"/produtos/{produto_id}?editado=ok", status_code=302)
+    return RedirectResponse(url="/produtos?editado=ok", status_code=302)
 
 
 # ============================================================

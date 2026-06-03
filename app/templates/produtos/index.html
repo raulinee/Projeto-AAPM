@@ -31,18 +31,21 @@
     {% if request.query_params.get('criado') == 'ok' %}
         <div class="alert alert-success">Produto criado com sucesso!</div>
     {% endif %}
+    {% if request.query_params.get('editado') == 'ok' %}
+        <div class="alert alert-success">Produto atualizado com sucesso!</div>
+    {% endif %}
     {% if request.query_params.get('desativado') == 'ok' %}
         <div class="alert alert-success">Produto desativado com sucesso.</div>
     {% endif %}
 
     <!-- Filtros -->
-    <form method="get" action="/produtos" class="filters-bar">
+    <form method="get" action="/produtos" class="filters-bar" id="filterFormProdutos">
         <div class="search-input-wrapper">
             <i data-lucide="search"></i>
-            <input type="text" name="busca" placeholder="Buscar por nome..." value="{{ busca }}">
+            <input type="text" name="busca" placeholder="Buscar por nome..." value="{{ busca }}" oninput="debounceSubmit()">
         </div>
         
-        <select name="categoria_id" class="filter-select" onchange="this.form.submit()">
+        <select name="categoria_id" class="filter-select" onchange="document.getElementById('filterFormProdutos').submit()">
             <option value="0">Todas as categorias</option>
             {% for c in categorias %}
                 <option value="{{ c.id }}" {{ 'selected' if categoria_id == c.id else '' }}>
@@ -51,10 +54,20 @@
             {% endfor %}
         </select>
         
-        <noscript>
-            <button type="submit" class="btn-primary" style="border:none;">Filtrar</button>
-        </noscript>
+        <button type="submit" class="btn-primary" style="border:none; padding: 0 16px;">
+            Filtrar
+        </button>
     </form>
+
+    <script>
+        let debounceTimer;
+        function debounceSubmit() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                document.getElementById('filterFormProdutos').submit();
+            }, 600);
+        }
+    </script>
 
     <!-- Lista de Produtos -->
     <div class="products-list">

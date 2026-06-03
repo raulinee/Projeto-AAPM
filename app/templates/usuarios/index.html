@@ -37,19 +37,38 @@
         {% if request.query_params.get('erro') == 'autoproprio' %}
             <div class="alert alert-danger">Você não pode desativar sua própria conta.</div>
         {% endif %}
+        {% if request.query_params.get('excluido') == 'ok' %}
+            <div class="alert alert-success">Usuário excluído com sucesso!</div>
+        {% endif %}
+        {% if request.query_params.get('erro') == 'autoproprio_excluir' %}
+            <div class="alert alert-danger">Você não pode excluir sua própria conta.</div>
+        {% endif %}
 
         <!-- Filtros -->
-        <div class="filters-bar">
+        <form method="get" action="/usuarios" class="filters-bar" id="filterForm">
             <div class="search-input-wrapper">
                 <i data-lucide="search"></i>
-                <input type="text" placeholder="Buscar por nome ou e-mail...">
+                <input type="text" name="busca" placeholder="Buscar por nome ou e-mail..." value="{{ busca }}" oninput="debounceSubmit()">
             </div>
-            <select class="filter-select">
+            <select name="role" class="filter-select" onchange="document.getElementById('filterForm').submit()">
                 <option value="">Todas as funções</option>
-                <option value="admin">Administrador</option>
-                <option value="operador">Operador</option>
+                <option value="admin" {% if role_filter == 'admin' %}selected{% endif %}>Administrador</option>
+                <option value="operador" {% if role_filter == 'operador' %}selected{% endif %}>Operador</option>
             </select>
-        </div>
+            <button type="submit" class="btn-primary" style="border:none; padding: 0 16px;">
+                Filtrar
+            </button>
+        </form>
+
+        <script>
+            let debounceTimer;
+            function debounceSubmit() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    document.getElementById('filterForm').submit();
+                }, 600); // Aguarda 600ms após o usuário parar de digitar
+            }
+        </script>
 
         <!-- Tabela -->
         <table class="data-table">
@@ -104,11 +123,15 @@
                         </span>
                     </td>
                     <td style="text-align: center;">
-                        <!-- O ideal seria uma rota DELETE, mas para UI vamos usar editar ou alguma rota de delete se houver -->
-                        <div style="display: flex; justify-content: center;">
+                        <div style="display: flex; justify-content: center; gap: 8px;">
                             <a href="/usuarios/{{ u.id }}/editar" class="action-btn" title="Editar">
                                 <i data-lucide="edit-2" style="width: 18px; height: 18px; color: var(--text-muted);"></i>
                             </a>
+                            <form action="/usuarios/{{ u.id }}/excluir" method="post" style="margin: 0;" onsubmit="return confirm('Tem certeza que deseja EXCLUIR permanentemente o usuário {{ u.nome }}?');">
+                                <button type="submit" class="action-btn action-delete" title="Excluir" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                                    <i data-lucide="trash-2" style="width: 18px; height: 18px; color: #ef4444;"></i>
+                                </button>
+                            </form>
                         </div>
                     </td>
                 </tr>

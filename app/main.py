@@ -65,7 +65,4 @@ async def painel(
         "painel/index.html",
         {"request": request, "usuario": admin}
     )
-
-@app.get("/usuarios", response_class=HTMLResponse)
-async def usuarios_redirect():
-    return RedirectResponse(url="/usuarios/")
+

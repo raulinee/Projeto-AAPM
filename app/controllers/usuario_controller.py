@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, Request, Form, status
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 
 from app.database import get_db
 from app.models.usuarios import Usuario
@@ -23,11 +24,26 @@ templates = Jinja2Templates(directory="app/templates")
 @router.get("/", response_class=HTMLResponse)
 def listar_usuarios(
     request: Request,
+    busca: str = "",
+    role: str = "",
     db: Session = Depends(get_db),
     admin = Depends(get_admin)  # bloqueia quem não é admin
 ):
     """Lista todos os usuários cadastrados no sistema."""
-    usuarios = db.query(Usuario).order_by(Usuario.nome).all()
+    query = db.query(Usuario)
+    
+    if busca:
+        query = query.filter(
+            or_(
+                Usuario.nome.ilike(f"%{busca}%"),
+                Usuario.email.ilike(f"%{busca}%")
+            )
+        )
+        
+    if role:
+        query = query.filter(Usuario.role == role)
+        
+    usuarios = query.order_by(Usuario.nome).all()
 
     return templates.TemplateResponse(
         request,
@@ -35,7 +51,9 @@ def listar_usuarios(
         {
             "request": request,
             "usuario": admin,   # dados de quem está logado (para navbar)
-            "usuarios": usuarios  # lista para exibir na tabela
+            "usuarios": usuarios,  # lista para exibir na tabela
+            "busca": busca,
+            "role_filter": role
         }
     )
 
@@ -246,3 +264,34 @@ def toggle_ativo(
     db.commit()
 
     return RedirectResponse(url="/usuarios", status_code=302)
+
+
+# ============================================================
+# EXCLUIR
+# ============================================================
+
+@router.post("/{usuario_id}/excluir")
+def excluir_usuario(
+    usuario_id: int,
+    db: Session = Depends(get_db),
+    admin = Depends(get_admin)
+):
+    """
+    Remove fisicamente o usuário do banco de dados.
+    """
+    usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
+
+    if not usuario:
+        return RedirectResponse(url="/usuarios", status_code=302)
+
+    # Proteção: admin não pode excluir a si mesmo
+    if usuario.email == admin.get("sub"):
+        return RedirectResponse(
+            url="/usuarios?erro=autoproprio_excluir",
+            status_code=302
+        )
+
+    db.delete(usuario)
+    db.commit()
+
+    return RedirectResponse(url="/usuarios?excluido=ok", status_code=302)
