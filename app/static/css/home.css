@@ -1,0 +1,104 @@
+/* ============================================================================
+   HOME.CSS - Estilo específico da página do PDV
+   ============================================================================ */
+
+/* Estilos adicionais para itens do carrinho dinâmicos */
+.cart-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    list-style: none;
+    width: 100%;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8fafc;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    animation: slide-in 0.2s ease;
+}
+
+@keyframes slide-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.cart-item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.cart-item-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.cart-item-price {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+.cart-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 2px 8px;
+}
+
+.qty-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    transition: color 0.2s;
+}
+
+.qty-btn:hover {
+    color: var(--accent-color);
+}
+
+.qty-val {
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 14px;
+    text-align: center;
+}
+
+.remove-item-btn {
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.remove-item-btn:hover {
+    background-color: #fee2e2;
+}

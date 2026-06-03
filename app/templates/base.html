@@ -17,12 +17,15 @@
     <!-- CSS -->
     <link
         rel="stylesheet"
-        href="/static/dashboard.css"
+        href="/static/css/dashboard.css"
     >
     <link
         rel="stylesheet"
-        href="/static/style.css"
+        href="/static/css/style.css"
     >
+
+    <!-- CSS específico por página -->
+    {% block styles %}{% endblock %}
 
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
