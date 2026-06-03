@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request, Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
-from app.auth import get_usuario_opcional
+from app.auth import get_usuario_opcional, get_admin
 
 from app.controllers import auth_controller
 from app.controllers import usuario_controller
@@ -58,15 +58,12 @@ def tela_inicial(
 @app.get("/painel", response_class=HTMLResponse)
 async def painel(
     request: Request,
-    usuario = Depends(get_usuario_opcional)
+    admin = Depends(get_admin)
 ):
-    if usuario is None:
-        return RedirectResponse(url="/auth/login", status_code=302)
-
     return templates.TemplateResponse(
         request,
         "painel/index.html",
-        {"request": request, "usuario": usuario}
+        {"request": request, "usuario": admin}
     )
 
 @app.get("/usuarios", response_class=HTMLResponse)

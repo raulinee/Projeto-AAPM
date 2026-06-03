@@ -31,7 +31,7 @@ def listar_produtos(
     busca: str = "",
     categoria_id: int = 0,       # 0 = todas as categorias
     db: Session = Depends(get_db),
-    usuario = Depends(get_usuario_logado)
+    admin = Depends(get_admin)
 ):
     query = db.query(Produto).filter(Produto.ativo == True)
 
@@ -49,7 +49,7 @@ def listar_produtos(
         "produtos/index.html",
         {
             "request":      request,
-            "usuario":      usuario,
+            "usuario":      admin,
             "produtos":     produtos,
             "categorias":   categorias,
             "busca":        busca,

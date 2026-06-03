@@ -49,22 +49,25 @@
                     <i data-lucide="history"></i>
                     <span>Histórico</span>
                 </a>
-                <a href="/produtos" class="nav-item {% if '/produtos' in request.url.path %}active{% endif %}">
-                    <i data-lucide="package"></i>
-                    <span>Produtos</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i data-lucide="archive"></i>
-                    <span>Armários</span>
-                </a>
-                <a href="/painel" class="nav-item {% if '/painel' in request.url.path %}active{% endif %}">
-                    <i data-lucide="layout-dashboard"></i>
-                    <span>Painel</span>
-                </a>
-                <a href="/usuarios" class="nav-item {% if '/usuarios' in request.url.path %}active{% endif %}">
-                    <i data-lucide="users"></i>
-                    <span>Usuários</span>
-                </a>
+
+                {% if usuario and usuario.role == 'admin' %}
+                    <a href="/produtos" class="nav-item {% if '/produtos' in request.url.path %}active{% endif %}">
+                        <i data-lucide="package"></i>
+                        <span>Produtos</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i data-lucide="archive"></i>
+                        <span>Armários</span>
+                    </a>
+                    <a href="/painel" class="nav-item {% if '/painel' in request.url.path %}active{% endif %}">
+                        <i data-lucide="layout-dashboard"></i>
+                        <span>Painel</span>
+                    </a>
+                    <a href="/usuarios" class="nav-item {% if '/usuarios' in request.url.path %}active{% endif %}">
+                        <i data-lucide="users"></i>
+                        <span>Usuários</span>
+                    </a>
+                {% endif %}
             </nav>
         </div>
 
