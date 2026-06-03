@@ -269,6 +269,7 @@ select.form-control {
 /* Filtros */
 .filters-bar {
     display: flex;
+    align-items: center;
     gap: 16px;
     margin-bottom: 24px;
 }
@@ -278,7 +279,7 @@ select.form-control {
     flex: 1;
 }
 
-.search-input-wrapper i {
+.search-input-wrapper svg, .search-input-wrapper i {
     position: absolute;
     left: 16px;
     top: 50%;

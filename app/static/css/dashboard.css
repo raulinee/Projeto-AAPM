@@ -28,7 +28,7 @@
 body {
     background-color: var(--bg-main);
     color: var(--text-primary);
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -167,6 +167,12 @@ body {
 /* ==========================================
    CORPO PRINCIPAL (CONTAINER)
    ========================================== */
+.page-container {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
 .app-container {
     display: flex;
     flex: 1;
@@ -184,6 +190,7 @@ body {
     flex-direction: column;
     gap: 20px;
     overflow-y: auto;
+    min-height: 0;
 }
 
 /* Barra de Busca */
@@ -191,6 +198,7 @@ body {
     position: relative;
     max-width: 480px;
     width: 100%;
+    flex-shrink: 0;
 }
 
 .search-input {
@@ -226,6 +234,7 @@ body {
     overflow-x: auto;
     padding-bottom: 4px;
     scrollbar-width: thin;
+    flex-shrink: 0;
 }
 
 .category-btn {
@@ -450,6 +459,7 @@ input:checked + .slider:before {
     padding: 24px;
     display: flex;
     flex-direction: column;
+    min-height: 0;
 }
 
 /* Estado de Carrinho Vazio */
