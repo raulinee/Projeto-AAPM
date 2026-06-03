@@ -56,12 +56,17 @@ def tela_inicial(
     )
 
 @app.get("/painel", response_class=HTMLResponse)
-async def painel(request: Request):
+async def painel(
+    request: Request,
+    usuario = Depends(get_usuario_opcional)
+):
+    if usuario is None:
+        return RedirectResponse(url="/auth/login", status_code=302)
 
     return templates.TemplateResponse(
         request,
-        "painel.html",
-        {"request": request}
+        "painel/index.html",
+        {"request": request, "usuario": usuario}
     )
 
 @app.get("/usuarios", response_class=HTMLResponse)
