@@ -1,82 +1,170 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <!--
-        editando é None na criação e o objeto Usuario na edição.
-        O template usa isso para adaptar título, action e campos.
-    -->
-    <title>{{ "Editar" if editando else "Novo" }} Usuário — Estoque</title>
-</head>
-<body>
-    <h1>{{ "Editar usuário" if editando else "Novo usuário" }}</h1>
+{% extends "base.html" %}
 
-    {% if erro %}
-        <p style="color: red;">{{ erro }}</p>
-    {% endif %}
+{% block title %}{{ "Editar" if editando else "Novo" }} Usuário — AAPM PDV{% endblock %}
 
-    <!--
-        action muda dinamicamente:
-        - criação → POST /usuarios/novo
-        - edição  → POST /usuarios/{id}/editar
-    -->
-    <form action="{{ '/usuarios/' + editando.id|string + '/editar' if editando else '/usuarios/novo' }}"
-          method="post">
+{% block styles %}
+<link rel="stylesheet" href="/static/css/usuarios.css">
+<link rel="stylesheet" href="/static/css/usuario_form.css">
+{% endblock %}
 
-        <label>Nome:
-            <!--
-                value recupera do objeto na edição,
-                ou do dicionário "valores" se houve erro na criação
-            -->
-            <input type="text"
-                   name="nome"
-                   value="{{ editando.nome if editando else (valores.nome if valores else '') }}"
-                   required>
-        </label>
-        <br>
+{% block content %}
 
-        <label>E-mail:
-            <input type="email"
-                   name="email"
-                   value="{{ editando.email if editando else (valores.email if valores else '') }}"
-                   required>
-        </label>
-        <br>
+<div class="page-wrapper">
+    <div class="content-card">
 
-        <label>Senha:
-            <!--
-                Na edição o campo é opcional — deixar vazio mantém a senha atual.
-                Na criação é obrigatório.
-            -->
-            <input type="password"
-                   name="senha"
-                   {{ "placeholder='Deixe vazio para não alterar'" if editando else "required minlength='6'" }}>
-        </label>
-        <br>
+        <!-- Header da página -->
+        <div class="page-header">
+            <div class="header-info">
+                <div class="header-icon">
+                    <i data-lucide="{{ 'user-pen' if editando else 'user-plus' }}"></i>
+                </div>
+                <div class="title-area">
+                    <h2>{{ "Editar usuário" if editando else "Novo usuário" }}</h2>
+                    <p>
+                        {% if editando %}
+                            Atualize os dados do usuário <strong>{{ editando.nome }}</strong>
+                        {% else %}
+                            Preencha os dados para criar um novo acesso ao sistema
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            <!-- Botão voltar -->
+            <a href="/usuarios" class="btn-back">
+                <i data-lucide="arrow-left" style="width:16px;height:16px;"></i>
+                Voltar
+            </a>
+        </div>
 
-        <label>Perfil de acesso:
-            <select name="role">
-                <!--
-                    selected é definido comparando com o valor atual.
-                    Na criação usa "valores.role" se voltou com erro,
-                    senão deixa "operador" como padrão.
-                -->
-                <option value="operador"
-                    {{ 'selected' if (editando and editando.role == 'operador') or (valores and valores.role == 'operador') else '' }}>
-                    Operador
-                </option>
-                <option value="admin"
-                    {{ 'selected' if (editando and editando.role == 'admin') or (valores and valores.role == 'admin') else '' }}>
-                    Administrador
-                </option>
-            </select>
-        </label>
-        <br>
+        <!-- Mensagem de erro -->
+        {% if erro %}
+            <div class="alert alert-danger">
+                <i data-lucide="alert-circle" style="width:16px;height:16px;"></i>
+                {{ erro }}
+            </div>
+        {% endif %}
 
-        <button type="submit">
-            {{ "Salvar alterações" if editando else "Criar usuário" }}
-        </button>
-        <a href="/usuarios">Cancelar</a>
-    </form>
-</body>
-</html>
+        <!-- Formulário -->
+        <form
+            action="{{ '/usuarios/' + editando.id|string + '/editar' if editando else '/usuarios/novo' }}"
+            method="post"
+            class="user-form"
+        >
+            <div class="form-grid">
+
+                <!-- Nome -->
+                <div class="form-group">
+                    <label class="form-label" for="nome">
+                        <i data-lucide="user" style="width:14px;height:14px;"></i>
+                        Nome completo
+                    </label>
+                    <input
+                        id="nome"
+                        type="text"
+                        name="nome"
+                        class="form-input"
+                        placeholder="Digite o nome completo"
+                        value="{{ editando.nome if editando else (valores.nome if valores else '') }}"
+                        required
+                    >
+                </div>
+
+                <!-- E-mail -->
+                <div class="form-group">
+                    <label class="form-label" for="email">
+                        <i data-lucide="mail" style="width:14px;height:14px;"></i>
+                        E-mail
+                    </label>
+                    <input
+                        id="email"
+                        type="email"
+                        name="email"
+                        class="form-input"
+                        placeholder="nome@exemplo.com"
+                        value="{{ editando.email if editando else (valores.email if valores else '') }}"
+                        required
+                    >
+                </div>
+
+                <!-- Senha -->
+                <div class="form-group">
+                    <label class="form-label" for="senha">
+                        <i data-lucide="lock" style="width:14px;height:14px;"></i>
+                        Senha
+                        {% if editando %}
+                            <span class="form-label-hint">(deixe vazio para manter a atual)</span>
+                        {% endif %}
+                    </label>
+                    <div class="input-password-wrapper">
+                        <input
+                            id="senha"
+                            type="password"
+                            name="senha"
+                            class="form-input"
+                            {% if editando %}
+                                placeholder="Deixe vazio para não alterar"
+                            {% else %}
+                                placeholder="Mínimo 6 caracteres"
+                                required
+                                minlength="6"
+                            {% endif %}
+                        >
+                        <button type="button" class="toggle-password" onclick="toggleSenha()" title="Mostrar/ocultar senha">
+                            <i data-lucide="eye" id="eye-icon" style="width:16px;height:16px;"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Perfil de acesso -->
+                <div class="form-group">
+                    <label class="form-label" for="role">
+                        <i data-lucide="shield" style="width:14px;height:14px;"></i>
+                        Perfil de acesso
+                    </label>
+                    <select id="role" name="role" class="form-input form-select">
+                        <option value="operador"
+                            {{ 'selected' if (editando and editando.role == 'operador') or (valores and valores.role == 'operador') else '' }}>
+                            Operador
+                        </option>
+                        <option value="admin"
+                            {{ 'selected' if (editando and editando.role == 'admin') or (valores and valores.role == 'admin') else '' }}>
+                            Administrador
+                        </option>
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- Ações -->
+            <div class="form-actions">
+                <a href="/usuarios" class="btn-cancel">
+                    Cancelar
+                </a>
+                <button type="submit" class="btn-submit">
+                    <i data-lucide="{{ 'save' if editando else 'user-plus' }}" style="width:16px;height:16px;"></i>
+                    {{ "Salvar alterações" if editando else "Criar usuário" }}
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function toggleSenha() {
+        const input = document.getElementById('senha');
+        const icon  = document.getElementById('eye-icon');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.setAttribute('data-lucide', 'eye-off');
+        } else {
+            input.type = 'password';
+            icon.setAttribute('data-lucide', 'eye');
+        }
+        lucide.createIcons();
+    }
+</script>
+{% endblock %}

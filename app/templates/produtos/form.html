@@ -8,7 +8,7 @@
 
 {% block content %}
 
-<div class="page-wrapper">
+<div class="page-wrapper form-wrapper">
     <div class="form-card">
         
         <a href="/produtos" class="close-btn" title="Cancelar">
@@ -98,6 +98,7 @@
             </div>
 
             <button type="submit" class="btn-submit">
+                <i data-lucide="save" style="width:16px;height:16px;"></i>
                 {{ "Salvar Produto" if editando else "Criar Produto" }}
             </button>
 

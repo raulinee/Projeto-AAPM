@@ -127,8 +127,14 @@
                             <a href="/usuarios/{{ u.id }}/editar" class="action-btn" title="Editar">
                                 <i data-lucide="edit-2" style="width: 18px; height: 18px; color: var(--text-muted);"></i>
                             </a>
-                            <form action="/usuarios/{{ u.id }}/excluir" method="post" style="margin: 0;" onsubmit="return confirm('Tem certeza que deseja EXCLUIR permanentemente o usuário {{ u.nome }}?');">
-                                <button type="submit" class="action-btn action-delete" title="Excluir" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                            <form id="form-excluir-{{ u.id }}" action="/usuarios/{{ u.id }}/excluir" method="post" style="margin: 0;">
+                                <button
+                                    type="button"
+                                    class="action-btn"
+                                    title="Excluir"
+                                    style="background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                    onclick="abrirModalExcluir('form-excluir-{{ u.id }}', '{{ u.nome }}')"
+                                >
                                     <i data-lucide="trash-2" style="width: 18px; height: 18px; color: #ef4444;"></i>
                                 </button>
                             </form>
@@ -148,4 +154,57 @@
 
     </div>
 </div>
+
+<!-- ── Modal de confirmação de exclusão ───────────────────────────── -->
+<div id="modal-excluir" class="modal-overlay" aria-modal="true" role="dialog" aria-labelledby="modal-titulo">
+    <div class="modal-box">
+        <div class="modal-icon-wrap">
+            <i data-lucide="trash-2" class="modal-trash-icon"></i>
+        </div>
+        <h3 id="modal-titulo" class="modal-title">Excluir usuário</h3>
+        <p class="modal-desc">
+            Tem certeza que deseja excluir permanentemente o usuário
+            <strong id="modal-nome-usuario"></strong>?
+            <br><span class="modal-warn">Esta ação não pode ser desfeita.</span>
+        </p>
+        <div class="modal-actions">
+            <button type="button" class="modal-btn-cancel" onclick="fecharModal()">Cancelar</button>
+            <button type="button" class="modal-btn-confirm" id="modal-btn-confirmar">Excluir</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let _formParaExcluir = null;
+
+    function abrirModalExcluir(formId, nomeUsuario) {
+        _formParaExcluir = document.getElementById(formId);
+        document.getElementById('modal-nome-usuario').textContent = nomeUsuario;
+        const overlay = document.getElementById('modal-excluir');
+        overlay.classList.add('visible');
+        lucide.createIcons();
+    }
+
+    function fecharModal() {
+        document.getElementById('modal-excluir').classList.remove('visible');
+        _formParaExcluir = null;
+    }
+
+    document.getElementById('modal-btn-confirmar').addEventListener('click', () => {
+        if (_formParaExcluir) _formParaExcluir.submit();
+    });
+
+    // Fecha ao clicar no overlay (fora do card)
+    document.getElementById('modal-excluir').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) fecharModal();
+    });
+
+    // Fecha com ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') fecharModal();
+    });
+</script>
 {% endblock %}

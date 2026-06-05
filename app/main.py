@@ -65,4 +65,4 @@ async def painel(
         "painel/index.html",
         {"request": request, "usuario": admin}
     )
-
+

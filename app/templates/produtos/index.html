@@ -9,7 +9,7 @@
 {% block content %}
 
 <div class="page-wrapper">
-    
+
     <!-- Header -->
     <div class="page-header">
         <div class="header-info">
@@ -29,31 +29,33 @@
     </div>
 
     {% if request.query_params.get('criado') == 'ok' %}
-        <div class="alert alert-success">Produto criado com sucesso!</div>
+    <div class="alert alert-success">Produto criado com sucesso!</div>
     {% endif %}
     {% if request.query_params.get('editado') == 'ok' %}
-        <div class="alert alert-success">Produto atualizado com sucesso!</div>
+    <div class="alert alert-success">Produto atualizado com sucesso!</div>
     {% endif %}
     {% if request.query_params.get('desativado') == 'ok' %}
-        <div class="alert alert-success">Produto desativado com sucesso.</div>
+    <div class="alert alert-success">Produto desativado com sucesso.</div>
     {% endif %}
 
     <!-- Filtros -->
     <form method="get" action="/produtos" class="filters-bar" id="filterFormProdutos">
         <div class="search-input-wrapper">
             <i data-lucide="search"></i>
-            <input type="text" name="busca" placeholder="Buscar por nome..." value="{{ busca }}" oninput="debounceSubmit()">
+            <input type="text" name="busca" placeholder="Buscar por nome..." value="{{ busca }}"
+                oninput="debounceSubmit()">
         </div>
-        
-        <select name="categoria_id" class="filter-select" onchange="document.getElementById('filterFormProdutos').submit()">
+
+        <select name="categoria_id" class="filter-select"
+            onchange="document.getElementById('filterFormProdutos').submit()">
             <option value="0">Todas as categorias</option>
             {% for c in categorias %}
-                <option value="{{ c.id }}" {{ 'selected' if categoria_id == c.id else '' }}>
-                    {{ c.nome }}
-                </option>
+            <option value="{{ c.id }}" {{ 'selected' if categoria_id==c.id else '' }}>
+                {{ c.nome }}
+            </option>
             {% endfor %}
         </select>
-        
+
         <button type="submit" class="btn-primary" style="border:none; padding: 0 16px;">
             Filtrar
         </button>
@@ -76,26 +78,29 @@
             <div class="product-info">
                 <span class="product-name">{{ p.nome }}</span>
                 <span class="product-details">
-                    {{ p.categoria.nome if p.categoria else "Sem Categoria" }} • R$ {{ "%.2f"|format(p.preco)|replace('.', ',') }}
+                    {{ p.categoria.nome if p.categoria else "Sem Categoria" }} • R$ {{
+                    "%.2f"|format(p.preco)|replace('.', ',') }}
                 </span>
             </div>
             <div class="product-actions">
                 {% if usuario.role == 'admin' %}
-                    <a href="/produtos/{{ p.id }}/editar" class="action-icon">
-                        <i data-lucide="edit-2" style="width: 18px; height: 18px;"></i>
-                    </a>
-                    <form action="/produtos/{{ p.id }}/desativar" method="post" style="margin: 0;" onsubmit="return confirm('Tem certeza que deseja desativar {{ p.nome }}?');">
-                        <button type="submit" class="action-btn action-delete">
-                            <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
-                        </button>
-                    </form>
+                <a href="/produtos/{{ p.id }}/editar" class="action-icon">
+                    <i data-lucide="edit-2" style="width: 18px; height: 18px;"></i>
+                </a>
+                <form action="/produtos/{{ p.id }}/desativar" method="post" style="margin: 0;"
+                    onsubmit="return confirm('Tem certeza que deseja desativar {{ p.nome }}?');">
+                    <button type="submit" class="action-btn action-delete">
+                        <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
+                    </button>
+                </form>
                 {% endif %}
             </div>
         </div>
         {% endfor %}
 
         {% if not produtos %}
-        <div style="text-align: center; color: var(--text-muted); padding: 40px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color);">
+        <div
+            style="text-align: center; color: var(--text-muted); padding: 40px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color);">
             Nenhum produto encontrado.
         </div>
         {% endif %}

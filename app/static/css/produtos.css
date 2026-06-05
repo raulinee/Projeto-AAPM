@@ -13,8 +13,8 @@
     padding: 40px 24px;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    min-height: 100%;
+    align-items: center;
+    min-height: calc(100vh - 64px);
 }
 
 /* Header */
@@ -70,7 +70,7 @@
 
 .btn-submit {
     width: 100%;
-    background-color: var(--orange-color);
+    background-color: var(--accent-color);
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -80,11 +80,21 @@
     cursor: pointer;
     transition: all 0.2s;
     margin-top: 12px;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .btn-submit:hover {
-    background-color: var(--orange-hover);
-    box-shadow: 0 4px 12px rgba(255, 122, 40, 0.3);
+    background-color: var(--accent-hover);
+    box-shadow: 0 4px 12px rgba(14, 62, 179, 0.25);
+    transform: translateY(-1px);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
 }
 
 /* Form Card */
@@ -92,10 +102,10 @@
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 16px;
-    padding: 32px;
+    padding: 36px;
     width: 100%;
-    max-width: 500px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    max-width: 520px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
     position: relative;
 }
 
