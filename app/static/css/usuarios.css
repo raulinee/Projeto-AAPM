@@ -379,3 +379,11 @@
 .modal-btn-confirm:active {
     transform: translateY(0);
 }
+
+.title-area h2,
+.user-details strong,
+.data-table th,
+.data-table td,
+.date-text {
+    color: #111 !important;
+}

@@ -209,3 +209,48 @@ def toggle_ativo(
     db.commit()
 
     return RedirectResponse(url="/categorias", status_code=302)
+
+
+# ============================================================
+# EXCLUIR CATEGORIA
+# ============================================================
+
+@router.post("/{categoria_id}/excluir")
+def excluir_categoria(
+    categoria_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+    admin = Depends(get_admin)
+):
+    """
+    Exclui uma categoria do sistema.
+    Só funciona se não houver produtos vinculados.
+    """
+
+    categoria = db.query(Categoria).filter(
+        Categoria.id == categoria_id
+    ).first()
+
+    if not categoria:
+        return RedirectResponse(
+            url="/categorias?erro=nao_encontrado",
+            status_code=302
+        )
+
+    # BLOQUEIO DE SEGURANÇA (igual regra de negócio)
+    if categoria.produtos:
+        produtos_ativos = [p for p in categoria.produtos if p.ativo]
+
+        if produtos_ativos:
+            return RedirectResponse(
+                url=f"/categorias?erro=produtos_vinculados&categoria={categoria.nome}",
+                status_code=302
+            )
+
+    db.delete(categoria)
+    db.commit()
+
+    return RedirectResponse(
+        url="/categorias?excluido=ok",
+        status_code=302
+    )

@@ -1,0 +1,261 @@
+.page-wrapper {
+    padding: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ================= HEADER ================= */
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.header-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-icon {
+    width: 48px;
+    height: 48px;
+    background: #f1f5f9;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.title-area h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 4px;
+}
+
+.title-area p {
+    font-size: 13px;
+    color: #444;
+    margin: 0;
+}
+
+/* ================= BOTÃO PRINCIPAL ================= */
+
+.btn-primary {
+    background: #2563eb; /* azul original do teu sistema */
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+/* ================= ALERTAS ================= */
+
+.alert {
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+.alert-success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.alert-danger {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* ================= CARD ================= */
+
+.content-card {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    padding: 24px;
+}
+
+/* ================= TABELA (CORREÇÃO REAL) ================= */
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* 🔥 garante alinhamento real */
+}
+
+.data-table tr {
+    height: 58px; /* todas linhas iguais */
+}
+
+.data-table th {
+    text-align: left;
+    padding: 14px;
+    font-size: 12px;
+    color: #111;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.data-table td {
+    padding: 14px;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: middle; /* 🔥 centraliza vertical */
+}
+
+/* coluna ações travada */
+.data-table td.actions,
+.data-table th:last-child {
+    width: 140px;
+    white-space: nowrap;
+    text-align: right;
+}
+
+/* ================= INFO ================= */
+
+.item-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+}
+
+.item-info strong {
+    font-size: 14px;
+    color: #111;
+}
+
+.item-info span {
+    font-size: 12px;
+    color: #444;
+}
+
+/* ================= STATUS ================= */
+
+.status {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status.ativo {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status.inativo {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+/* ================= AÇÕES (ALINHAMENTO PERFEITO) ================= */
+
+.actions {
+    display: flex;
+    align-items: center; /* 🔥 mesma altura */
+    justify-content: flex-end;
+    gap: 10px;
+    height: 100%;
+}
+
+/* editar */
+.btn-link {
+    color: #374151;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 6px 8px;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+.btn-link:hover {
+    background: #f3f4f6;
+    color: #2563eb;
+}
+
+/* excluir */
+.btn-danger {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-weight: 600;
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-danger:hover {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* ================= FORM CENTRALIZADO ================= */
+
+.form-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-card {
+    background: #fff;
+    padding: 28px;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    width: 100%;
+    max-width: 520px;
+    margin-top: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 14px;
+}
+
+.form-group label {
+    font-size: 13px;
+    margin-bottom: 6px;
+    color: #111;
+}
+
+.form-control {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+}
+
+.form-control:focus {
+    border-color: #2563eb;
+    outline: none;
+}
+
+.full {
+    width: 100%;
+}
+
+.btn-cancel {
+    display: block;
+    margin-top: 10px;
+    text-align: center;
+    color: #444;
+    text-decoration: none;
+}
+
+.btn-cancel:hover {
+    color: #2563eb;
+}
