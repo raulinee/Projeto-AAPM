@@ -91,3 +91,14 @@ def sair():
     response = RedirectResponse(url="/auth/login", status_code=302)
     response.delete_cookie(key="access_token")
     return response
+
+
+@router.get("/switch")
+def trocar_conta():
+    """Remove o cookie de autenticação e redireciona para a tela de login.
+
+    Usado pela página de erro 403 quando o usuário deseja entrar com outra conta.
+    """
+    response = RedirectResponse(url="/auth/login", status_code=302)
+    response.delete_cookie(key="access_token")
+    return response

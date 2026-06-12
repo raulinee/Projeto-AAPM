@@ -35,7 +35,7 @@ def tela_inicial(
     if usuario is None:
         return templates.TemplateResponse(
             request,
-            "/auth/login.html",
+            "auth/login.html",
             {"request": request}
         )
     
@@ -65,4 +65,40 @@ async def painel(
         "painel/index.html",
         {"request": request, "usuario": admin}
     )
+
+
+# Tratamento customizado para erros HTTP (401 / 403)
+from fastapi.responses import PlainTextResponse
+from fastapi import HTTPException
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    # Tratamento específico para HTTPException (401/403)
+    status_code = exc.status_code
+    # tentar obter usuário logado (opcional) para mostrar no header
+    try:
+        usuario = get_usuario_opcional(request)
+    except Exception:
+        usuario = None
+    if status_code == 403:
+        return templates.TemplateResponse(
+            request,
+            "errors/403.html",
+            {"request": request, "detail": exc.detail, "usuario": usuario},
+            status_code=403
+        )
+    if status_code == 401:
+        return templates.TemplateResponse(
+            request,
+            "auth/login.html",
+            {"request": request, "detail": exc.detail, "usuario": usuario},
+            status_code=401
+        )
+
+
+@app.exception_handler(Exception)
+async def generic_exception_handler(request: Request, exc: Exception):
+    # Fallback genérico para exceções não tratadas
+    return PlainTextResponse(str(getattr(exc, 'detail', str(exc))), status_code=getattr(exc, 'status_code', 500))
 

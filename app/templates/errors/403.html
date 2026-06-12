@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Acesso Negado — AAPM{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="/static/css/errors.css">
+{% endblock %}
+
+{% block content %}
+<div class="error-app-container">
+    <div class="error-card">
+        <div class="error-illustration">
+            <!-- simples ícone SVG para destaque -->
+            <svg width="140" height="140" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" fill="var(--error-accent)" opacity="0.12"/>
+                <path d="M12 7v6" stroke="var(--error-accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 16h.01" stroke="var(--error-accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+
+        <div class="error-content">
+            <h1 class="error-title">Acesso negado</h1>
+            <p class="error-desc">Você não tem permissão para acessar esta página. Se acredita que deveria ter acesso, contate um administrador ou tente entrar com outra conta.</p>
+
+            <div class="error-actions">
+                <a href="/" class="btn-primary">Ir para a página inicial</a>
+                <a href="/auth/switch" class="btn-secondary">Entrar com outra conta</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

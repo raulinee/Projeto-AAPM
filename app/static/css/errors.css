@@ -1,0 +1,83 @@
+/* Estilos para páginas de erro (403, 404, etc.) */
+:root{
+    --error-bg: #fff7f2;
+    --error-card: #ffffff;
+    --error-accent: var(--orange-color, #ff7a28);
+    --text-primary: var(--text-primary, #1e293b);
+    --text-muted: var(--text-muted, #64748b);
+}
+
+.error-app-container{
+    min-height: calc(100vh - 64px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:48px 24px;
+    background: linear-gradient(180deg, #fbf7f3 0%, #fff 60%);
+}
+
+.error-card{
+    max-width: 920px;
+    width:100%;
+    background: var(--error-card);
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(16,24,40,0.08);
+    padding: 48px 40px;
+    display:flex;
+    gap: 32px;
+    align-items:center;
+}
+
+.error-illustration{
+    flex: 0 0 220px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.error-content{
+    flex:1;
+}
+
+.error-title{
+    font-size: 34px;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+
+.error-desc{
+    color: var(--text-muted);
+    margin-bottom: 22px;
+    line-height:1.6;
+}
+
+.error-actions{
+    display:flex;
+    gap:12px;
+    align-items:center;
+}
+
+.btn-primary{
+    background: var(--error-accent);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-secondary{
+    background: transparent;
+    color: var(--text-primary);
+    padding: 10px 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    border: 1px solid rgba(16,24,40,0.06);
+}
+
+@media (max-width: 800px){
+    .error-card{flex-direction:column; padding:32px}
+    .error-illustration{flex: none}
+    .error-title{font-size:28px}
+}
