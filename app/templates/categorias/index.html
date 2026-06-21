@@ -3,116 +3,207 @@
 {% block title %}Categorias — AAPM PDV{% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="/static/css/categorias.css">
+<link rel="stylesheet" href="/static/css/categorias.css?v=5">
 {% endblock %}
 
 {% block content %}
 
 <div class="page-wrapper">
-
-    <!-- HEADER -->
-    <div class="page-header">
-
-        <div class="header-info">
-            <div class="header-icon">
-                📦
-            </div>
-
-            <div class="title-area">
-                <h2>Gestão de Categorias</h2>
-                <p>Gerencie categorias do sistema</p>
-            </div>
-        </div>
-
-        <a href="/categorias/nova" class="btn-primary">
-            + Nova Categoria
-        </a>
-
-    </div>
-
-    <!-- ALERTAS -->
-    {% if request.query_params.get('criado') == 'ok' %}
-    <div class="alert alert-success">Categoria criada com sucesso!</div>
-    {% endif %}
-
-    {% if request.query_params.get('editado') == 'ok' %}
-    <div class="alert alert-success">Categoria atualizada com sucesso!</div>
-    {% endif %}
-
-    {% if request.query_params.get('excluido') == 'ok' %}
-    <div class="alert alert-success">Categoria excluída com sucesso!</div>
-    {% endif %}
-
-    {% if request.query_params.get('erro') == 'produtos_vinculados' %}
-    <div class="alert alert-danger">
-        Não é possível excluir esta categoria pois há produtos vinculados.
-    </div>
-    {% endif %}
-
-    <!-- TABELA -->
     <div class="content-card">
 
-        <table class="data-table">
+        <!-- Header -->
+        <div class="page-header">
+            <div class="header-info">
+                <div class="header-icon">
+                    <i data-lucide="tags" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div class="title-area">
+                    <h2>Gestão de Categorias</h2>
+                    <p>Gerencie categorias do sistema</p>
+                </div>
+            </div>
+            <a href="/categorias/nova" class="btn-primary">
+                <i data-lucide="plus" style="width: 18px; height: 18px;"></i>
+                Nova Categoria
+            </a>
+        </div>
 
+        <!-- Alertas -->
+        {% if request.query_params.get('criado') == 'ok' %}
+            <div class="alert alert-success">Categoria criada com sucesso!</div>
+        {% endif %}
+        {% if request.query_params.get('editado') == 'ok' %}
+            <div class="alert alert-success">Categoria atualizada com sucesso!</div>
+        {% endif %}
+        {% if request.query_params.get('excluido') == 'ok' %}
+            <div class="alert alert-success">Categoria excluída com sucesso!</div>
+        {% endif %}
+        {% if request.query_params.get('erro') == 'produtos_vinculados' %}
+            <div class="alert alert-danger">
+                Não é possível excluir esta categoria pois há produtos vinculados.
+            </div>
+        {% endif %}
+
+        <!-- Filtros -->
+        <form method="get" action="/categorias" class="filters-bar" id="filterFormCategorias">
+            <div class="search-input-wrapper">
+                <input type="text" name="busca" id="busca-input" placeholder="Buscar por nome..." value=""
+                    onkeydown="if(event.key === 'Enter') event.preventDefault();">
+                <button type="submit" class="search-icon-btn" title="Pesquisar">
+                    <i data-lucide="search"></i>
+                </button>
+            </div>
+        </form>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const searchInput = document.getElementById("busca-input");
+                const categoryRows = document.querySelectorAll(".category-row");
+
+                if (searchInput) {
+                    searchInput.addEventListener("input", function(e) {
+                        const term = e.target.value.toLowerCase();
+                        
+                        categoryRows.forEach(row => {
+                            const name = row.querySelector(".category-name").textContent.toLowerCase();
+                            const details = row.querySelector(".category-details").textContent.toLowerCase();
+                            
+                            if (name.includes(term) || details.includes(term)) {
+                                row.style.display = "";
+                            } else {
+                                row.style.display = "none";
+                            }
+                        });
+                    });
+                }
+            });
+        </script>
+
+        <!-- Tabela -->
+        <table class="data-table">
             <thead>
                 <tr>
                     <th>Categoria</th>
-                    <th>Produtos</th>
                     <th>Status</th>
-                    <th>Ações</th>
+                    <th>Produtos</th>
+                    <th style="text-align: center;">Ações</th>
                 </tr>
             </thead>
-
             <tbody>
-
                 {% for c in categorias %}
-                <tr>
-
+                <tr class="category-row">
                     <td>
-                        <div class="item-info">
-                            <strong>{{ c.nome }}</strong>
-                            <span>ID: {{ c.id }}</span>
+                        <div class="category-cell">
+                            <div class="category-icon-small">
+                                <i data-lucide="tag" style="width: 16px; height: 16px;"></i>
+                            </div>
+                            <div class="category-details-cell">
+                                <strong class="category-name">{{ c.nome }}</strong>
+                            </div>
                         </div>
                     </td>
-
                     <td>
-                        {{ c.produtos | selectattr('ativo') | list | length }}
+                        <form action="/categorias/{{ c.id }}/toggle-ativo" method="post" style="margin: 0;">
+                            <div class="status-badge">
+                                <label class="switch" style="transform: scale(0.8); margin: 0;">
+                                    <input type="checkbox" onchange="this.form.submit()" {% if c.ativo %}checked{% endif %}>
+                                    <span class="slider"></span>
+                                </label>
+                                {% if c.ativo %}
+                                    <span class="status-text ativo">Ativa</span>
+                                {% else %}
+                                    <span class="status-text inativo">Inativa</span>
+                                {% endif %}
+                            </div>
+                        </form>
                     </td>
-
                     <td>
-                        <span class="status {{ 'ativo' if c.ativo else 'inativo' }}">
-                            {{ "Ativa" if c.ativo else "Inativa" }}
+                        <span class="category-details count-badge">
+                            {{ c.produtos | selectattr('ativo') | list | length }} produtos
                         </span>
                     </td>
-
-                    <td class="actions">
-
-                        <a href="/categorias/{{ c.id }}/editar" class="btn-link">
-                            Editar
-                        </a>
-
-                        <form action="/categorias/{{ c.id }}/excluir"
-                              method="post"
-                              style="display:inline"
-                              onsubmit="return confirm('Deseja excluir esta categoria?');">
-
-                            <button type="submit" class="btn-danger">
-                                Excluir
-                            </button>
-
-                        </form>
-
+                    <td style="text-align: center;">
+                        <div style="display: flex; justify-content: center; gap: 8px;">
+                            <a href="/categorias/{{ c.id }}/editar" class="action-btn-icon" title="Editar">
+                                <i data-lucide="edit-2" style="width: 18px; height: 18px;"></i>
+                            </a>
+                            <form id="form-excluir-{{ c.id }}" action="/categorias/{{ c.id }}/excluir" method="post" style="margin: 0;">
+                                <button
+                                    type="button"
+                                    class="action-btn"
+                                    title="Excluir"
+                                    onclick="abrirModalExcluir('form-excluir-{{ c.id }}', '{{ c.nome }}')"
+                                >
+                                    <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
+                                </button>
+                            </form>
+                        </div>
                     </td>
-
                 </tr>
                 {% endfor %}
-
+                {% if not categorias %}
+                <tr>
+                    <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 32px;">
+                        Nenhuma categoria encontrada.
+                    </td>
+                </tr>
+                {% endif %}
             </tbody>
-
         </table>
 
     </div>
-
 </div>
 
+<!-- Modal de confirmação de exclusão -->
+<div id="modal-excluir" class="modal-overlay" aria-modal="true" role="dialog" aria-labelledby="modal-titulo">
+    <div class="modal-box">
+        <div class="modal-icon-wrap">
+            <i data-lucide="trash-2" class="modal-trash-icon"></i>
+        </div>
+        <h3 id="modal-titulo" class="modal-title">Excluir categoria</h3>
+        <p class="modal-desc">
+            Tem certeza que deseja excluir permanentemente a categoria
+            <strong id="modal-nome-categoria"></strong>?
+            <br><span class="modal-warn">Esta ação não pode ser desfeita.</span>
+        </p>
+        <div class="modal-actions">
+            <button type="button" class="modal-btn-cancel" onclick="fecharModal()">Cancelar</button>
+            <button type="button" class="modal-btn-confirm" id="modal-btn-confirmar">Excluir</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let _formParaExcluir = null;
+
+    function abrirModalExcluir(formId, nomeCategoria) {
+        _formParaExcluir = document.getElementById(formId);
+        document.getElementById('modal-nome-categoria').textContent = nomeCategoria;
+        const overlay = document.getElementById('modal-excluir');
+        overlay.classList.add('visible');
+        lucide.createIcons();
+    }
+
+    function fecharModal() {
+        document.getElementById('modal-excluir').classList.remove('visible');
+        _formParaExcluir = null;
+    }
+
+    document.getElementById('modal-btn-confirmar').addEventListener('click', () => {
+        if (_formParaExcluir) _formParaExcluir.submit();
+    });
+
+    // Fecha ao clicar no overlay (fora do card)
+    document.getElementById('modal-excluir').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) fecharModal();
+    });
+
+    // Fecha com ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') fecharModal();
+    });
+</script>
 {% endblock %}

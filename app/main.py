@@ -69,12 +69,12 @@ async def painel(
 
 # Tratamento customizado para erros HTTP (401 / 403)
 from fastapi.responses import PlainTextResponse
-from fastapi import HTTPException
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 
-@app.exception_handler(HTTPException)
-async def http_exception_handler(request: Request, exc: HTTPException):
-    # Tratamento específico para HTTPException (401/403)
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    # Tratamento específico para HTTPExceptions (401/403/404)
     status_code = exc.status_code
     # tentar obter usuário logado (opcional) para mostrar no header
     try:
@@ -94,6 +94,13 @@ async def http_exception_handler(request: Request, exc: HTTPException):
             "auth/login.html",
             {"request": request, "detail": exc.detail, "usuario": usuario},
             status_code=401
+        )
+    if status_code == 404:
+        return templates.TemplateResponse(
+            request,
+            "errors/404.html",
+            {"request": request, "detail": exc.detail, "usuario": usuario},
+            status_code=404
         )
 
 

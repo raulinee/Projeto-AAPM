@@ -3,108 +3,232 @@
 {% block title %}Produtos — AAPM PDV{% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="/static/css/produtos.css">
+<link rel="stylesheet" href="/static/css/produtos.css?v=7">
 {% endblock %}
 
 {% block content %}
 
 <div class="page-wrapper">
+    <div class="content-card">
 
-    <!-- Header -->
-    <div class="page-header">
-        <div class="header-info">
-            <div class="header-icon">
-                <i data-lucide="package" style="width: 24px; height: 24px;"></i>
+        <!-- Header -->
+        <div class="page-header">
+            <div class="header-info">
+                <div class="header-icon">
+                    <i data-lucide="package" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div class="title-area">
+                    <h2>Gestão de Produtos</h2>
+                    <p>Gerencie o catálogo de produtos, preços e estoque</p>
+                </div>
             </div>
-            <div class="title-area">
-                <h2>Gestão de Produtos</h2>
-            </div>
+            {% if usuario.role == 'admin' %}
+            <a href="/produtos/novo" class="btn-primary">
+                <i data-lucide="plus" style="width: 18px; height: 18px;"></i>
+                Novo Produto
+            </a>
+            {% endif %}
         </div>
-        {% if usuario.role == 'admin' %}
-        <a href="/produtos/novo" class="btn-primary">
-            <i data-lucide="plus" style="width: 18px; height: 18px;"></i>
-            Novo Produto
-        </a>
+
+        {% if request.query_params.get('criado') == 'ok' %}
+        <div class="alert alert-success">Produto criado com sucesso!</div>
         {% endif %}
-    </div>
+        {% if request.query_params.get('editado') == 'ok' %}
+        <div class="alert alert-success">Produto atualizado com sucesso!</div>
+        {% endif %}
+        {% if request.query_params.get('desativado') == 'ok' %}
+        <div class="alert alert-success">Produto desativado com sucesso.</div>
+        {% endif %}
 
-    {% if request.query_params.get('criado') == 'ok' %}
-    <div class="alert alert-success">Produto criado com sucesso!</div>
-    {% endif %}
-    {% if request.query_params.get('editado') == 'ok' %}
-    <div class="alert alert-success">Produto atualizado com sucesso!</div>
-    {% endif %}
-    {% if request.query_params.get('desativado') == 'ok' %}
-    <div class="alert alert-success">Produto desativado com sucesso.</div>
-    {% endif %}
-
-    <!-- Filtros -->
-    <form method="get" action="/produtos" class="filters-bar" id="filterFormProdutos">
-        <div class="search-input-wrapper">
-            <i data-lucide="search"></i>
-            <input type="text" name="busca" placeholder="Buscar por nome..." value="{{ busca }}"
-                oninput="debounceSubmit()">
-        </div>
-
-        <select name="categoria_id" class="filter-select"
-            onchange="document.getElementById('filterFormProdutos').submit()">
-            <option value="0">Todas as categorias</option>
-            {% for c in categorias %}
-            <option value="{{ c.id }}" {{ 'selected' if categoria_id==c.id else '' }}>
-                {{ c.nome }}
-            </option>
-            {% endfor %}
-        </select>
-
-        <button type="submit" class="btn-primary" style="border:none; padding: 0 16px;">
-            Filtrar
-        </button>
-    </form>
-
-    <script>
-        let debounceTimer;
-        function debounceSubmit() {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => {
-                document.getElementById('filterFormProdutos').submit();
-            }, 600);
-        }
-    </script>
-
-    <!-- Lista de Produtos -->
-    <div class="products-list">
-        {% for p in produtos %}
-        <div class="product-row">
-            <div class="product-info">
-                <span class="product-name">{{ p.nome }}</span>
-                <span class="product-details">
-                    {{ p.categoria.nome if p.categoria else "Sem Categoria" }} • R$ {{
-                    "%.2f"|format(p.preco)|replace('.', ',') }}
-                </span>
+        <!-- Filtros -->
+        <form method="get" action="/produtos" class="filters-bar" id="filterFormProdutos">
+            <div class="search-input-wrapper">
+                <input type="text" name="busca" placeholder="Buscar por nome..." value="{{ busca }}" id="busca-input"
+                    onkeydown="if(event.key === 'Enter') event.preventDefault();">
+                <button type="submit" class="search-icon-btn" title="Pesquisar">
+                    <i data-lucide="search"></i>
+                </button>
             </div>
-            <div class="product-actions">
-                {% if usuario.role == 'admin' %}
-                <a href="/produtos/{{ p.id }}/editar" class="action-icon">
-                    <i data-lucide="edit-2" style="width: 18px; height: 18px;"></i>
-                </a>
-                <form action="/produtos/{{ p.id }}/desativar" method="post" style="margin: 0;"
-                    onsubmit="return confirm('Tem certeza que deseja desativar {{ p.nome }}?');">
-                    <button type="submit" class="action-btn action-delete">
-                        <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
-                    </button>
-                </form>
+
+            <select name="categoria_id" class="filter-select"
+                onchange="document.getElementById('filterFormProdutos').submit()">
+                <option value="0">Todas as categorias</option>
+                {% for c in categorias %}
+                <option value="{{ c.id }}" {{ 'selected' if categoria_id==c.id else '' }}>
+                    {{ c.nome }}
+                </option>
+                {% endfor %}
+            </select>
+        </form>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const searchInput = document.getElementById("busca-input");
+                const productRows = document.querySelectorAll(".product-row");
+
+                if (searchInput) {
+                    searchInput.addEventListener("input", function (e) {
+                        const term = e.target.value.toLowerCase();
+
+                        productRows.forEach(row => {
+                            const name = row.querySelector(".product-name").textContent.toLowerCase();
+                            const category = row.querySelector(".product-category").textContent.toLowerCase();
+
+                            if (name.includes(term) || category.includes(term)) {
+                                row.style.display = "";
+                            } else {
+                                row.style.display = "none";
+                            }
+                        });
+                    });
+
+                    if (searchInput.value) {
+                        searchInput.focus();
+                        const val = searchInput.value;
+                        searchInput.value = '';
+                        searchInput.value = val;
+                        searchInput.dispatchEvent(new Event('input'));
+                    }
+                }
+            });
+        </script>
+
+        <!-- Tabela -->
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Categoria</th>
+                    <th>Preço</th>
+                    <th>Estoque</th>
+                    <th style="text-align: center;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in produtos %}
+                <tr class="product-row">
+                    <td>
+                        <div class="product-cell">
+                            <div class="product-icon-small">
+                                {% if p.imagem_path %}
+                                <img src="/static/{{ p.imagem_path }}" alt="{{ p.nome }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                                {% else %}
+                                <i data-lucide="package" style="width: 20px; height: 20px;"></i>
+                                {% endif %}
+                            </div>
+                            <div class="product-details-cell">
+                                <strong class="product-name">{{ p.nome }}</strong>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="product-category">{{ p.categoria.nome if p.categoria else "Sem Categoria" }}</span>
+                    </td>
+                    <td>
+                        <strong class="product-price">R$ {{ "%.2f"|format(p.preco)|replace('.', ',') }}</strong>
+                    </td>
+                    <td>
+                        <div class="product-stock-actions">
+                            {% if p.estoque_atual == 0 %}
+                            <span class="stock-badge stock-empty">
+                                <i data-lucide="alert-triangle" style="width: 14px; height: 14px;"></i>
+                                Sem estoque
+                            </span>
+                            {% elif p.estoque_atual <= 10 %}
+                            <span class="stock-badge stock-low">
+                                <i data-lucide="alert-circle" style="width: 14px; height: 14px;"></i>
+                                {{ p.estoque_atual }} un.
+                            </span>
+                            {% else %}
+                            <span class="stock-badge stock-ok">
+                                <i data-lucide="check-circle" style="width: 14px; height: 14px;"></i>
+                                {{ p.estoque_atual }} un.
+                            </span>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div style="display: flex; justify-content: center; gap: 8px;">
+                            {% if usuario.role == 'admin' %}
+                            <a href="/produtos/{{ p.id }}/editar" class="action-btn-icon" title="Editar">
+                                <i data-lucide="edit-2" style="width: 18px; height: 18px;"></i>
+                            </a>
+                            <form id="form-desativar-{{ p.id }}" action="/produtos/{{ p.id }}/desativar" method="post" style="margin: 0;">
+                                <button
+                                    type="button"
+                                    class="action-btn"
+                                    title="Desativar"
+                                    onclick="abrirModalDesativar('form-desativar-{{ p.id }}', '{{ p.nome }}')"
+                                >
+                                    <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not produtos %}
+                <tr>
+                    <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 32px;">
+                        Nenhum produto encontrado.
+                    </td>
+                </tr>
                 {% endif %}
-            </div>
-        </div>
-        {% endfor %}
+            </tbody>
+        </table>
 
-        {% if not produtos %}
-        <div
-            style="text-align: center; color: var(--text-muted); padding: 40px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color);">
-            Nenhum produto encontrado.
-        </div>
-        {% endif %}
     </div>
-
 </div>
+
+<!-- Modal de confirmação de desativação -->
+<div id="modal-desativar" class="modal-overlay" aria-modal="true" role="dialog" aria-labelledby="modal-titulo">
+    <div class="modal-box">
+        <div class="modal-icon-wrap">
+            <i data-lucide="trash-2" class="modal-trash-icon"></i>
+        </div>
+        <h3 id="modal-titulo" class="modal-title">Desativar produto</h3>
+        <p class="modal-desc">
+            Tem certeza que deseja desativar o produto
+            <strong id="modal-nome-produto"></strong>?
+            <br><span class="modal-warn">Ele não aparecerá mais no PDV.</span>
+        </p>
+        <div class="modal-actions">
+            <button type="button" class="modal-btn-cancel" onclick="fecharModal()">Cancelar</button>
+            <button type="button" class="modal-btn-confirm" id="modal-btn-confirmar">Desativar</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let _formParaDesativar = null;
+
+    function abrirModalDesativar(formId, nomeProduto) {
+        _formParaDesativar = document.getElementById(formId);
+        document.getElementById('modal-nome-produto').textContent = nomeProduto;
+        const overlay = document.getElementById('modal-desativar');
+        overlay.classList.add('visible');
+        lucide.createIcons();
+    }
+
+    function fecharModal() {
+        document.getElementById('modal-desativar').classList.remove('visible');
+        _formParaDesativar = null;
+    }
+
+    document.getElementById('modal-btn-confirmar').addEventListener('click', () => {
+        if (_formParaDesativar) _formParaDesativar.submit();
+    });
+
+    document.getElementById('modal-desativar').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) fecharModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') fecharModal();
+    });
+</script>
 {% endblock %}

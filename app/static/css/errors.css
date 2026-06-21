@@ -46,6 +46,15 @@
     font-weight: 700;
 }
 
+.error-code{
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--error-accent);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
 .error-desc{
     color: var(--text-muted);
     margin-bottom: 22px;

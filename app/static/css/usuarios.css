@@ -53,8 +53,8 @@
 }
 
 .btn-primary {
-    background: var(--accent-color);
-    color: #fff;
+    background: #111b63;
+    color: #ffffff;
     padding: 10px 20px;
     border-radius: 8px;
     text-decoration: none;
@@ -67,7 +67,7 @@
 }
 
 .btn-primary:hover {
-    background: var(--accent-hover);
+    background: #1f2f98;
 }
 
 /* Filtros */
@@ -84,10 +84,6 @@
 }
 
 .search-input-wrapper svg, .search-input-wrapper i {
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
     color: var(--text-muted);
     width: 18px;
     height: 18px;
@@ -129,9 +125,10 @@
     padding: 16px;
     font-size: 12px;
     font-weight: 600;
-    color: var(--text-muted);
+    color: #ffffff;
     text-transform: uppercase;
     border-bottom: 1px solid var(--border-color);
+    background: #111b63;
 }
 
 .data-table td {
@@ -382,7 +379,6 @@
 
 .title-area h2,
 .user-details strong,
-.data-table th,
 .data-table td,
 .date-text {
     color: #111 !important;

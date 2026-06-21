@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Página não encontrada — AAPM{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="/static/css/errors.css">
+{% endblock %}
+
+{% block content %}
+<div class="error-app-container">
+    <div class="error-card">
+        <div class="error-illustration">
+            <svg width="140" height="140" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" fill="var(--error-accent)" opacity="0.12"/>
+                <path d="M9 9l6 6" stroke="var(--error-accent)" stroke-width="1.6" stroke-linecap="round"/>
+                <path d="M15 9l-6 6" stroke="var(--error-accent)" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+        </div>
+
+        <div class="error-content">
+            <p class="error-code">404</p>
+            <h1 class="error-title">Página não encontrada</h1>
+            <p class="error-desc">O endereço que você tentou acessar não existe ou foi removido. Verifique se digitou corretamente ou volte para a página inicial.</p>
+
+            <div class="error-actions">
+                <a href="/" class="btn-primary">
+                    Ir para a página inicial
+                </a>
+                <a href="javascript:history.back()" class="btn-secondary">
+                    Voltar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

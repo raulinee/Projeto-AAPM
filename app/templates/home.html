@@ -16,14 +16,17 @@
         
         <!-- Barra de Busca -->
         <div class="search-container">
-            <i data-lucide="search" class="search-icon"></i>
             <input 
                 type="text" 
                 id="search-input" 
                 class="search-input" 
                 placeholder="Buscar produto..."
                 autocomplete="off"
+                onkeydown="if(event.key === 'Enter') event.preventDefault();"
             >
+            <button type="button" class="search-icon-btn" id="search-btn" title="Pesquisar">
+                <i data-lucide="search"></i>
+            </button>
         </div>
 
         <!-- Categorias -->

@@ -34,7 +34,8 @@
 .header-icon {
     width: 48px;
     height: 48px;
-    background: transparent;
+    background: #f1f5f9;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -45,12 +46,18 @@
     font-size: 20px;
     font-weight: 700;
     color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.title-area p {
+    font-size: 13px;
+    color: var(--text-muted);
 }
 
 /* Buttons */
 .btn-primary {
-    background: var(--accent-color);
-    color: #fff;
+    background: #111b63;
+    color: #ffffff;
     padding: 10px 20px;
     border-radius: 8px;
     text-decoration: none;
@@ -65,7 +72,7 @@
 }
 
 .btn-primary:hover {
-    background: var(--accent-hover);
+    background: #1f2f98;
 }
 
 .btn-submit {
@@ -198,82 +205,338 @@ select.form-control {
     height: 100px;
 }
 
-/* Product List */
-.products-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.product-row {
+/* Content Card */
+.content-card {
     background: var(--bg-card);
+    border-radius: 16px;
     border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 20px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-    transition: transform 0.2s;
+    padding: 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
-.product-row:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+/* ================= TABELA ================= */
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-.product-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.product-name {
-    font-size: 15px;
+.data-table th {
+    text-align: left;
+    padding: 16px;
+    font-size: 12px;
     font-weight: 600;
-    color: var(--text-primary);
+    color: #ffffff;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border-color);
+    background: #111b63;
 }
 
-.product-details {
-    font-size: 13px;
-    color: var(--text-muted);
+.data-table td {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
 }
 
-.product-actions {
+.data-table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.data-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Produto Cell */
+.product-cell {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
 }
 
-.action-icon {
-    color: var(--text-muted);
-    transition: color 0.2s;
-    text-decoration: none;
+.product-icon-small {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #eff6ff;
+    color: var(--accent-color);
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
-.action-icon:hover {
+.product-details-cell strong {
+    display: block;
+    font-size: 14px;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.product-price {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.product-category {
+    font-size: 14px;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* Ações */
+.action-btn-icon {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.action-btn-icon:hover {
+    background: #f1f5f9;
     color: var(--text-primary);
 }
 
 .action-btn {
     background: none;
     border: none;
+    color: #ef4444;
     cursor: pointer;
-    padding: 4px;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.action-delete {
+.action-btn:hover {
+    background: #fee2e2;
+}
+
+/* Switch & Status Badge */
+.status-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+.switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #cbd5e1;
+    transition: .3s;
+    border-radius: 24px;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+input:checked + .slider {
+    background-color: var(--accent-color);
+}
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+input:disabled + .slider {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.status-text {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 12px;
+}
+
+.status-text.ativo {
+    background: var(--accent-color);
+    color: #fff;
+}
+
+.status-text.inativo {
+    background: #f1f5f9;
+    color: var(--text-muted);
+}
+
+/* Stock Badges */
+.stock-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.stock-ok {
+    color: #16a34a;
+}
+
+.stock-low {
+    color: #d97706;
+}
+
+.stock-empty {
+    color: #dc2626;
+}
+
+/* ================= MODAL DE EXCLUSÃO ================= */
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(12, 35, 64, 0.55);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    animation: fadeOverlay 0.2s ease;
+}
+
+.modal-overlay.visible {
+    display: flex;
+}
+
+@keyframes fadeOverlay {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.modal-box {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 36px 32px 28px;
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+    animation: slideUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(24px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+.modal-icon-wrap {
+    width: 64px;
+    height: 64px;
+    background: #fee2e2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+.modal-trash-icon {
+    width: 28px;
+    height: 28px;
     color: #ef4444;
 }
 
-.action-delete:hover {
-    color: #b91c1c;
+.modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.modal-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 28px;
+}
+
+.modal-desc strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.modal-warn {
+    font-size: 12px;
+    color: #ef4444;
+    font-weight: 500;
+    display: inline-block;
+    margin-top: 6px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.modal-btn-cancel {
+    flex: 1;
+    padding: 11px 0;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: #ffffff;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+
+.modal-btn-cancel:hover {
+    background: var(--bg-main);
+    border-color: #94a3b8;
+    color: var(--text-primary);
+}
+
+.modal-btn-confirm {
+    flex: 1;
+    padding: 11px 0;
+    border-radius: 8px;
+    border: none;
+    background: #ef4444;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+
+.modal-btn-confirm:hover {
+    background: #dc2626;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+    transform: translateY(-1px);
+}
+
+.modal-btn-confirm:active {
+    transform: translateY(0);
 }
 
 /* Filtros */
@@ -289,11 +552,8 @@ select.form-control {
     flex: 1;
 }
 
-.search-input-wrapper svg, .search-input-wrapper i {
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
+.search-input-wrapper svg,
+.search-input-wrapper i {
     color: var(--text-muted);
     width: 18px;
     height: 18px;

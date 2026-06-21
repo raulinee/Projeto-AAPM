@@ -190,11 +190,20 @@ function updateCartUI() {
  * Event Listeners e inicialização
  */
 
-// Evento de busca
+// Evento de busca instantânea (ao digitar)
 searchInput.addEventListener('input', (e) => {
     currentSearch = e.target.value;
     renderProducts();
 });
+
+// Mantemos o botão caso o usuário queira clicar
+const searchBtn = document.getElementById('search-btn');
+if (searchBtn) {
+    searchBtn.addEventListener('click', () => {
+        currentSearch = searchInput.value;
+        renderProducts();
+    });
+}
 
 // Evento de filtro de categoria
 categoryButtons.forEach(button => {

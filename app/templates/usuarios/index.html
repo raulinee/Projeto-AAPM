@@ -3,7 +3,7 @@
 {% block title %}Usuários — AAPM PDV{% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="/static/css/usuarios.css">
+<link rel="stylesheet" href="/static/css/usuarios.css?v=2">
 {% endblock %}
 
 {% block content %}
@@ -47,27 +47,53 @@
         <!-- Filtros -->
         <form method="get" action="/usuarios" class="filters-bar" id="filterForm">
             <div class="search-input-wrapper">
-                <i data-lucide="search"></i>
-                <input type="text" name="busca" placeholder="Buscar por nome ou e-mail..." value="{{ busca }}" oninput="debounceSubmit()">
+                <input type="text" name="busca" id="busca-input" placeholder="Buscar por nome ou e-mail..." value="{{ busca }}" 
+                    onkeydown="if(event.key === 'Enter') event.preventDefault();">
+                <button type="submit" class="search-icon-btn" title="Pesquisar">
+                    <i data-lucide="search"></i>
+                </button>
             </div>
             <select name="role" class="filter-select" onchange="document.getElementById('filterForm').submit()">
                 <option value="">Todas as funções</option>
                 <option value="admin" {% if role_filter == 'admin' %}selected{% endif %}>Administrador</option>
                 <option value="operador" {% if role_filter == 'operador' %}selected{% endif %}>Operador</option>
             </select>
-            <button type="submit" class="btn-primary" style="border:none; padding: 0 16px;">
-                Filtrar
-            </button>
         </form>
 
         <script>
-            let debounceTimer;
-            function debounceSubmit() {
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(() => {
-                    document.getElementById('filterForm').submit();
-                }, 600); // Aguarda 600ms após o usuário parar de digitar
-            }
+            document.addEventListener("DOMContentLoaded", function() {
+                const searchInput = document.getElementById("busca-input");
+                const userRows = document.querySelectorAll(".usuario-row");
+
+                // Busca instantânea no client-side
+                if (searchInput) {
+                    searchInput.addEventListener("input", function(e) {
+                        const term = e.target.value.toLowerCase();
+                        
+                        userRows.forEach(row => {
+                            const name = row.querySelector(".user-details strong").textContent.toLowerCase();
+                            const email = row.querySelector(".user-details span").textContent.toLowerCase();
+                            
+                            if (name.includes(term) || email.includes(term)) {
+                                row.style.display = "";
+                            } else {
+                                row.style.display = "none";
+                            }
+                        });
+                    });
+
+                    // Recuperar o foco após o recarregamento da página (se houver busca pela URL)
+                    if (searchInput.value) {
+                        searchInput.focus();
+                        const val = searchInput.value;
+                        searchInput.value = '';
+                        searchInput.value = val;
+                        
+                        // Dispara a busca inicial para refletir na tela
+                        searchInput.dispatchEvent(new Event('input'));
+                    }
+                }
+            });
         </script>
 
         <!-- Tabela -->
@@ -83,7 +109,7 @@
             </thead>
             <tbody>
                 {% for u in usuarios %}
-                <tr>
+                <tr class="usuario-row">
                     <td>
                         <div class="user-cell">
                             <div class="user-avatar-small">

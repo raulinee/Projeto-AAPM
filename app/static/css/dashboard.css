@@ -217,12 +217,27 @@ body {
     box-shadow: 0 0 0 3px rgba(14, 62, 179, 0.1);
 }
 
-.search-icon {
+.search-icon-btn {
     position: absolute;
     left: 16px;
     top: 50%;
     transform: translateY(-50%);
+    background: none;
+    border: none;
     color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: color 0.2s ease;
+}
+
+.search-icon-btn:hover {
+    color: var(--accent-color);
+}
+
+.search-icon-btn i {
     width: 18px;
     height: 18px;
 }
