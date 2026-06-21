@@ -77,8 +77,8 @@
 
 .btn-submit {
     width: 100%;
-    background-color: var(--accent-color);
-    color: #fff;
+    background-color: #111b63;
+    color: #ffffff;
     border: none;
     border-radius: 8px;
     padding: 14px;
@@ -95,8 +95,8 @@
 }
 
 .btn-submit:hover {
-    background-color: var(--accent-hover);
-    box-shadow: 0 4px 12px rgba(14, 62, 179, 0.25);
+    background-color: #1f2f98;
+    box-shadow: 0 4px 12px rgba(17, 27, 99, 0.25);
     transform: translateY(-1px);
 }
 

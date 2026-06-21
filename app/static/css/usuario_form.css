@@ -185,7 +185,7 @@
     padding: 11px 24px;
     border-radius: 8px;
     border: none;
-    background: var(--accent-color);
+    background: #111b63;
     color: #ffffff;
     font-size: 14px;
     font-weight: 600;
@@ -195,8 +195,8 @@
 }
 
 .btn-submit:hover {
-    background: var(--accent-hover);
-    box-shadow: 0 4px 12px rgba(14, 62, 179, 0.25);
+    background: #1f2f98;
+    box-shadow: 0 4px 12px rgba(17, 27, 99, 0.25);
     transform: translateY(-1px);
 }
 
