@@ -39,8 +39,13 @@ def tela_inicial(
             {"request": request}
         )
     
-    # Buscar produtos e categorias
-    produtos = db.query(Produto).filter(Produto.ativo == True).all()
+    # Buscar produtos ativos cuja categoria também esteja ativa
+    produtos = (
+        db.query(Produto)
+        .join(Categoria, Produto.categoria_id == Categoria.id)
+        .filter(Produto.ativo == True, Categoria.ativo == True)
+        .all()
+    )
     categorias = db.query(Categoria).filter(Categoria.ativo == True).all()
 
     #logado - exibir a tela de funcionario

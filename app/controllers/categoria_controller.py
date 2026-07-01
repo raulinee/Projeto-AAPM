@@ -184,9 +184,10 @@ def toggle_ativo(
     """
     Ativa ou desativa uma categoria.
 
-    Não deletamos pois a categoria pode estar vinculada
-    a produtos existentes. Desativar apenas esconde do
-    select do formulário de produto — os vínculos permanecem.
+    Os produtos vinculados NÃO são alterados. Eles permanecem
+    ativos dentro da categoria, mas não aparecem no PDV enquanto
+    a categoria estiver inativa. Ao reativar a categoria, os
+    produtos voltam a aparecer automaticamente no PDV.
     """
     categoria = db.query(Categoria).filter(
         Categoria.id == categoria_id
@@ -195,20 +196,13 @@ def toggle_ativo(
     if not categoria:
         return RedirectResponse(url="/categorias", status_code=302)
 
-    # Bloqueia desativação se houver produtos ativos vinculados
-    if categoria.ativo:
-        produtos_ativos = [p for p in categoria.produtos if p.ativo]
-
-        if produtos_ativos:
-            return RedirectResponse(
-                url=f"/categorias?erro=produtos_vinculados&categoria={categoria.nome}",
-                status_code=302
-            )
-
     categoria.ativo = not categoria.ativo
     db.commit()
 
-    return RedirectResponse(url="/categorias", status_code=302)
+    if categoria.ativo:
+        return RedirectResponse(url="/categorias?ativado=ok", status_code=302)
+    else:
+        return RedirectResponse(url="/categorias?desativado=ok", status_code=302)
 
 
 # ============================================================

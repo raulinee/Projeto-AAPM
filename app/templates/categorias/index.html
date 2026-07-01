@@ -38,9 +38,17 @@
         {% if request.query_params.get('excluido') == 'ok' %}
             <div class="alert alert-success">Categoria excluída com sucesso!</div>
         {% endif %}
+        {% if request.query_params.get('desativado') == 'ok' %}
+            <div class="alert alert-success">
+                Categoria desativada com sucesso! Os produtos vinculados continuam cadastrados e voltarão a aparecer no PDV quando a categoria for reativada.
+            </div>
+        {% endif %}
+        {% if request.query_params.get('ativado') == 'ok' %}
+            <div class="alert alert-success">Categoria ativada com sucesso! Os produtos vinculados voltaram a aparecer no PDV.</div>
+        {% endif %}
         {% if request.query_params.get('erro') == 'produtos_vinculados' %}
             <div class="alert alert-danger">
-                Não é possível excluir esta categoria pois há produtos vinculados.
+                Não é possível excluir esta categoria pois há produtos vinculados. Desative a categoria para removê-los do PDV.
             </div>
         {% endif %}
 
@@ -119,7 +127,8 @@
                     </td>
                     <td>
                         <span class="category-details count-badge">
-                            {{ c.produtos | selectattr('ativo') | list | length }} produtos
+                            {% set ativos = c.produtos | selectattr('ativo') | list %}
+                            {{ ativos | length }} produto{{ 's' if ativos | length != 1 else '' }}
                         </span>
                     </td>
                     <td style="text-align: center;">
